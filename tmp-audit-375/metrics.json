@@ -1,0 +1,152 @@
+[
+  {
+    "route": "/",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\home.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\nMundial 2026\n0 partidos\njugados\n0 goles\nen el torneo\n114 días\npara la final\nproximos partidosver todos →\nGROUP_STAGE07:00 p. m.\nMexico\n–\nSouth Africa\nGROUP_STAGE02:00 a. m.\nSouth Korea\n–\nPor confirmar\nGROUP_STAGE07:00 p. m.\nCanada\n–\nPor confirmar\nultimos resultadosver todos →"
+    }
+  },
+  {
+    "route": "/matches",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\matches.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\nPartidos\n\nFiltra por estado para explorar el fixture del Mundial.\n\nTodosSCHEDULEDIN_PLAYFINISHED\nGROUP_STAGE07:00 p. m.\nMexico\n–\nSouth Africa\nGROUP_STAGE02:00 a. m.\nSouth Korea\n–\nPor confirmar\nGROUP_STAGE07:00 p. m.\nCanada\n–\nPor confirmar\nGROUP_STAGE01:00 a. m.\nUnited States\n–\nParaguay\nGROUP_STAGE04:00 a. m.\nAustralia\n–\nPor confirmar\nGROUP_STAGE07:00 p. m.\nQatar\n–\nSwitzerland\nGROUP_STAGE10:00 p. m.\nBrazil\n–\nMorocco\nGROUP_STAGE01:00 a. m"
+    }
+  },
+  {
+    "route": "/matches/537327",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\matches__537327.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar"
+    }
+  },
+  {
+    "route": "/groups",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\groups.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\nTabla de grupos\n\nPosiciones y rendimiento por grupo del Mundial.\n\nGroup A\n\n#equipoPJDGPTS\n1\nMexico\n000\n2\nSouth Africa\n000\n3\nSouth Korea\n000\n4\nPor confirmar\n000\n\nGroup B\n\n#equipoPJDGPTS\n1\nCanada\n000\n2\nPor confirmar\n000\n3\nQatar\n000\n4\nSwitzerland\n000\n\nGroup C\n\n#equipoPJDGPTS\n1\nBrazil\n000\n2\nMorocco\n000\n3\nHaiti\n000\n4\nScotland\n000\n\nGroup D\n\n#equipoPJDGPTS\n1\nPor confirmar\n000\n2\nUnited States\n000\n3\nParaguay\n000\n4\nAustralia\n000\n\nGroup E\n\n#equipo"
+    }
+  },
+  {
+    "route": "/bracket",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\bracket.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\ncuadro eliminatorio\nOctavos\nCuartos\nPor confirmar\n-\nPor confirmar\n-\n9 jul, 15:00\nPor confirmar\n-\nPor confirmar\n-\n10 jul, 14:00\nPor confirmar\n-\nPor confirmar\n-\n11 jul, 16:00\nPor confirmar\n-\nPor confirmar\n-\n11 jul, 20:00\nSemis\nPor confirmar\n-\nPor confirmar\n-\n14 jul, 14:00\nPor confirmar\n-\nPor confirmar\n-\n15 jul, 14:00\nFinal\nPor confirmar\n-\nPor confirmar\n-\n19 jul, 14:00\ntercer lugar\nTercer lugar\nPor confirmar\n-\nPor confirmar\n-\n18 jul, 16:00"
+    }
+  },
+  {
+    "route": "/compare",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\compare.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\ncomparar equipos\n\nSelecciona dos selecciones para comparar su rendimiento en este torneo.\n\nAlgeriaArgentinaAustraliaAustriaBelgiumBrazilCanadaCape Verde IslandsColombiaCroatiaCuraçaoEcuadorEgyptEnglandFranceGermanyGhanaHaitiIranIvory CoastJapanJordanMexicoMoroccoNetherlandsNew ZealandNorwayPanamaParaguayPortugalQatarSaudi ArabiaScotlandSenegalSouth AfricaSouth KoreaSpainSwitzerlandTunisiaUnited StatesUruguayUzbekistan"
+    }
+  },
+  {
+    "route": "/compare?a=759&b=773",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\compare_a_759_b_773.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\n← cambiar equipos\nGermanyGroup E · #1\nvs\nFranceGroup I · #1\nestadísticas en el torneo\npuntos\n0\n0\nvictorias\n0\n0\ngoles a favor\n0\n0\ngoles en contra\n0\n0\ndiferencia\n0\n0\npartidos\n0\n0\nenfrentamientos directos\n\nno se han enfrentado en este torneo\n\ncomparar otros equipos →"
+    }
+  },
+  {
+    "route": "/teams",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\teams.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\nselecciones\nAlgeria\nAlgeria\nArgentina\nArgentina\nAustralia\nAustralia\nAustria\nAustria\nBelgium\nBelgium\nBrazil\nBrazil\nCanada\nCanada\nCape Verde Islands\nCape Verde Islands\nColombia\nColombia\nCroatia\nCroatia\nCuraçao\nCuraçao\nEcuador\nEcuador\nEgypt\nEgypt\nEngland\nEngland\nFrance\nFrance\nGermany\nGermany\nGhana\nGhana\nHaiti\nHaiti\nIran\nIran\nIvory Coast\nCôte d’Ivoire\nJapan\nJapan\nJordan\nJordan\nMexico\nMexico\nMorocco\nMorocco\nNetherlands\nNetherlands\nNew Zealan"
+    }
+  },
+  {
+    "route": "/predictions",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\predictions.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\npredicciones\nsin partidos evaluados aún\n\nMexico\n\nvs\n\n11 jun 2026, 2:00 p. m.\n\nSouth Africa\n\n34%\n\nlocal\n\n32%\n\nempate\n\n34%\n\nvisitante\n\nbasado en stats del torneo\n\nSouth Korea\n\nvs\n\n11 jun 2026, 9:00 p. m.\n\nPor confirmar\n\n34%\n\nlocal\n\n32%\n\nempate\n\n34%\n\nvisitante\n\nbasado en stats del torneo\n\nCanada\n\nvs\n\n12 jun 2026, 2:00 p. m.\n\nPor confirmar\n\n34%\n\nlocal\n\n32%\n\nempate\n\n34%\n\nvisitante\n\nbasado en stats del torneo\n\nUnited States\n\nvs\n\n12 jun 2026, "
+    }
+  },
+  {
+    "route": "/stats",
+    "screenshotPath": "C:\\Users\\romul\\OneDrive\\Desktop\\O11CE\\o11ce\\tmp-audit-375\\stats.png",
+    "metrics": {
+      "windowWidth": 375,
+      "docClientWidth": 375,
+      "docScrollWidth": 375,
+      "bodyScrollWidth": 362,
+      "horizontal": false,
+      "navExists": true,
+      "logoFits": null,
+      "burgerFits": null,
+      "textSample": "O11CE\npartidosgruposbracketstatsequiposprediccionescomparar\nestadisticas\n0\ngoles por partido\n0\ngoles totales\n0\npartidos jugados\nmás goleadores\ntipo de resultado\n0\nvictoria local\n0%\n0\nempate\n0%\n0\nvictoria visitante\n0%\naún invictos\n\ntodos los equipos han perdido al menos una vez"
+    }
+  }
+]

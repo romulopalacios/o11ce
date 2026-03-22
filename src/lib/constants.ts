@@ -1,0 +1,7 @@
+export const TTL = {
+  LIVE_MATCH: 30,
+  UPCOMING_MATCHES: 300,
+  FINISHED_MATCH: 3600,
+  STANDINGS: 120,
+  TEAM_PROFILE: 86400,
+} as const;

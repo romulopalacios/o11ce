@@ -1,0 +1,44 @@
+import BracketMatch from "@/components/bracket/BracketMatch";
+import BaseSkeleton from "@/components/ui/base/BaseSkeleton";
+import { formatStageName } from "@/server/services/football/bracketService";
+import type { FootballMatch } from "@/server/services/football/types";
+
+interface BracketColumnProps {
+  stage: string;
+  matches: FootballMatch[];
+}
+
+export function BracketColumn({ stage, matches }: BracketColumnProps) {
+  return (
+    <div className="flex flex-col gap-3 items-center">
+      <span className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] mb-1">
+        {formatStageName(stage)}
+      </span>
+
+      <div className="flex flex-col gap-3 sm:gap-4 stagger">
+        {matches.length > 0
+          ? matches.map((match) => (
+              <BracketMatch key={match.id} match={match} />
+            ))
+          : Array.from({ length: getExpectedMatches(stage) }).map((_, index) => (
+              <BaseSkeleton
+                key={index}
+                className="w-[150px] sm:w-[180px] h-[88px] border-dashed"
+              />
+            ))}
+      </div>
+    </div>
+  );
+}
+
+function getExpectedMatches(stage: string): number {
+  const map: Record<string, number> = {
+    ROUND_OF_16: 8,
+    QUARTER_FINALS: 4,
+    SEMI_FINALS: 2,
+    THIRD_PLACE: 1,
+    FINAL: 1,
+  };
+
+  return map[stage] ?? 1;
+}

@@ -1,0 +1,112 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Team {
+  id          Int      @id
+  name        String
+  shortName   String
+  crest       String
+  area        String
+  homeMatches Match[]  @relation("HomeTeam")
+  awayMatches Match[]  @relation("AwayTeam")
+  goals       Goal[]
+  bookings    Booking[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Match {
+  id            Int            @id
+  status        MatchStatus
+  stage         String
+  group         String?
+  utcDate       DateTime
+  minute        Int?
+  homeTeamId    Int
+  awayTeam      Team           @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeamId    Int
+  homeTeam      Team           @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeScore     Int?
+  awayScore     Int?
+  halfHomeScore Int?
+  halfAwayScore Int?
+  goals         Goal[]
+  bookings      Booking[]
+  substitutions Substitution[]
+  prediction    Prediction?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+}
+
+model Goal {
+  id         Int      @id @default(autoincrement())
+  matchId    Int
+  match      Match    @relation(fields: [matchId], references: [id])
+  minute     Int
+  teamId     Int
+  team       Team     @relation(fields: [teamId], references: [id])
+  scorerName String
+  assistName String?
+  type       GoalType @default(REGULAR)
+}
+
+model Booking {
+  id         Int      @id @default(autoincrement())
+  matchId    Int
+  match      Match    @relation(fields: [matchId], references: [id])
+  minute     Int
+  teamId     Int
+  team       Team     @relation(fields: [teamId], references: [id])
+  playerName String
+  cardType   CardType
+}
+
+model Substitution {
+  id            Int   @id @default(autoincrement())
+  matchId       Int
+  match         Match @relation(fields: [matchId], references: [id])
+  minute        Int
+  teamId        Int
+  playerOutName String
+  playerInName  String
+}
+
+model Prediction {
+  id             Int      @id @default(autoincrement())
+  matchId        Int      @unique
+  match          Match    @relation(fields: [matchId], references: [id])
+  homeWinProb    Float
+  drawProb       Float
+  awayWinProb    Float
+  predictedScore String?
+  wasCorrect     Boolean?
+  actualResult   String?
+  createdAt      DateTime @default(now())
+}
+
+enum MatchStatus {
+  SCHEDULED
+  IN_PLAY
+  PAUSED
+  FINISHED
+  POSTPONED
+  CANCELLED
+}
+
+enum GoalType {
+  REGULAR
+  OWN
+  PENALTY
+}
+
+enum CardType {
+  YELLOW_CARD
+  RED_CARD
+  YELLOW_RED_CARD
+}
