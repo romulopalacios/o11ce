@@ -3,6 +3,7 @@ import { Suspense } from "react";
 
 import StandingsTable from "@/components/groups/StandingsTable";
 import EmptyState from "@/components/ui/EmptyState";
+import { PageHero } from "@/components/ui/PageHero";
 import { PageWrapper } from "@/components/ui/PageWrapper";
 import { Skeleton } from "@/components/ui/Skeleton";
 import * as groupService from "@/server/services/football/groupService";
@@ -36,31 +37,22 @@ async function GroupsContent() {
 export default function GroupsPage() {
   return (
     <>
-      <div className="border-b border-b1">
-        <div className="max-w-[660px] mx-auto px-6 py-7 flex items-end justify-between">
-          <h1 className="font-display text-[48px] leading-none tracking-[.02em] text-t1">
-            GRUPOS
-          </h1>
-          <div className="font-mono text-label text-t3 text-right leading-relaxed">
-            Mundial 2026
-            <br />
-            <span className="text-t2">12 grupos · 48 selecciones</span>
-          </div>
-        </div>
-      </div>
+      <PageHero title="GRUPOS" subtitle="12 grupos · 48 selecciones" meta="Mundial 2026" />
 
       <PageWrapper>
-        <Suspense
-          fallback={(
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {Array.from({ length: 4 }).map((_, i) => (
-                <Skeleton key={i} height="h-[180px]" className="mb-0" />
-              ))}
-            </div>
-          )}
-        >
-          <GroupsContent />
-        </Suspense>
+        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+          <Suspense
+            fallback={(
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <Skeleton key={i} height="h-[220px]" className="mb-0" />
+                ))}
+              </div>
+            )}
+          >
+            <GroupsContent />
+          </Suspense>
+        </section>
       </PageWrapper>
     </>
   );

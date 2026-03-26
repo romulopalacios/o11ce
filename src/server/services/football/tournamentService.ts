@@ -4,6 +4,9 @@ interface TournamentContext {
   phase: string;
   matchesPlayed: number;
   totalGoals: number;
+  goalsPerMatch: string;
+  daysToWorldCup: number;
+  daysToStart: number;
   daysToFinal: number;
 }
 
@@ -37,17 +40,36 @@ export async function getTournamentContext(): Promise<TournamentContext> {
     ?? played[played.length - 1]?.stage
     ?? "Mundial 2026";
 
+  const worldCupStart = matches
+    .map((match) => new Date(match.utcDate))
+    .filter((date) => !Number.isNaN(date.getTime()))
+    .sort((a, b) => a.getTime() - b.getTime())[0] ?? new Date("2026-06-11");
+
   const finalDate = new Date("2026-07-14");
   const today = new Date();
+  const daysToWorldCup = Math.max(
+    0,
+    Math.ceil((worldCupStart.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
+  );
+  const daysToStart = Math.max(
+    0,
+    Math.ceil((new Date("2026-06-11").getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
+  );
   const daysToFinal = Math.max(
     0,
     Math.ceil((finalDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
   );
+  const goalsPerMatch = played.length > 0
+    ? (totalGoals / played.length).toFixed(2)
+    : "0.00";
 
   return {
     phase: formatPhase(currentPhase),
     matchesPlayed: played.length,
     totalGoals,
+    goalsPerMatch,
+    daysToWorldCup,
+    daysToStart,
     daysToFinal,
   };
 }

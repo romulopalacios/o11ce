@@ -10,12 +10,12 @@ interface BracketColumnProps {
 
 export function BracketColumn({ stage, matches }: BracketColumnProps) {
   return (
-    <div className="flex flex-col gap-3 items-center">
-      <span className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] mb-1">
+    <div className="flex flex-col items-center gap-4">
+      <span className="mb-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">
         {formatStageName(stage)}
       </span>
 
-      <div className="flex flex-col gap-3 sm:gap-4 stagger">
+      <div className="flex flex-col gap-4 sm:gap-5 stagger">
         {matches.length > 0
           ? matches.map((match) => (
               <BracketMatch key={match.id} match={match} />
@@ -23,7 +23,7 @@ export function BracketColumn({ stage, matches }: BracketColumnProps) {
           : Array.from({ length: getExpectedMatches(stage) }).map((_, index) => (
               <BaseSkeleton
                 key={index}
-                className="w-[150px] sm:w-[180px] h-[88px] border-dashed"
+                className="h-[88px] w-[150px] border-dashed border-white/15 bg-white/[0.02] sm:w-[180px]"
               />
             ))}
       </div>

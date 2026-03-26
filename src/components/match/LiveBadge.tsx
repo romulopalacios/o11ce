@@ -1,9 +1,8 @@
 export function LiveBadge({ minute }: { minute?: number | null }) {
   return (
-    <span className="inline-flex items-center gap-[5px] font-mono text-[10px] font-medium tracking-[.08em] text-[var(--live)]">
+    <span className="inline-flex items-center gap-[6px] rounded-full border border-[var(--live)]/40 bg-[var(--live)]/10 px-2 py-[2px] font-mono text-[10px] font-semibold tracking-[.1em] text-[var(--live)]">
       <span
-        className="w-[5px] h-[5px] rounded-full bg-[var(--live)]"
-        style={{ animation: "blink 1.4s ease-in-out infinite" }}
+        className="h-[6px] w-[6px] rounded-full bg-[var(--live)] broadcast-dot"
       />
       {minute ? `LIVE · ${minute}'` : "LIVE"}
     </span>

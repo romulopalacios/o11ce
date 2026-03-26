@@ -4,6 +4,7 @@ import { Suspense } from "react";
 
 import { MatchListClient } from "@/components/match/MatchListClient";
 import EmptyState from "@/components/ui/EmptyState";
+import { PageHero } from "@/components/ui/PageHero";
 import { PageWrapper } from "@/components/ui/PageWrapper";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { cn } from "@/lib/utils";
@@ -52,10 +53,10 @@ async function MatchesContent({ status }: MatchesContentProps) {
           href="/matches"
           className={cn(
             "font-mono text-[10px] tracking-[.1em] uppercase px-3 py-1.5",
-            "rounded-full border transition-colors duration-100",
+            "rounded-full border border-neutral-800 bg-neutral-900/50 transition-colors duration-100",
             !status
               ? "border-accent text-accent bg-accent/10"
-              : "border-border text-text2 hover:border-border2 hover:text-text",
+              : "text-text2 hover:border-neutral-700 hover:text-text",
           )}
         >
           todos
@@ -70,10 +71,10 @@ async function MatchesContent({ status }: MatchesContentProps) {
             href={`/matches?status=${value}`}
             className={cn(
               "font-mono text-[10px] tracking-[.1em] uppercase px-3 py-1.5",
-              "rounded-full border transition-colors duration-100",
+              "rounded-full border border-neutral-800 bg-neutral-900/50 transition-colors duration-100",
               status === value
                 ? "border-accent text-accent bg-accent/10"
-                : "border-border text-text2 hover:border-border2 hover:text-text",
+                : "text-text2 hover:border-neutral-700 hover:text-text",
             )}
           >
             {label}
@@ -99,25 +100,15 @@ export default async function MatchesPage({ searchParams }: MatchesPageProps) {
 
   return (
     <>
-      <div className="border-b border-b1">
-        <div className="max-w-[660px] mx-auto px-6 py-7 flex items-end justify-between">
-          <h1 className="font-display text-[48px] leading-none tracking-[.02em] text-t1">
-            PARTIDOS
-          </h1>
-          <div className="font-mono text-label text-t3 text-right leading-relaxed">
-            Mundial 2026
-            <br />
-            <span className="text-t2">fixture completo</span>
-          </div>
-        </div>
-      </div>
+      <PageHero title="PARTIDOS" subtitle="fixture completo" meta="Mundial 2026" />
 
       <PageWrapper>
-        <div className="mb-5 h-[40px] bg-s1 border border-b1 rounded-lg animate-pulse" />
+        <div className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
 
-        <Suspense fallback={<Skeleton count={6} height="h-[72px]" />}>
-          <MatchesContent status={selectedStatus} />
-        </Suspense>
+          <Suspense fallback={<Skeleton count={6} height="h-[82px]" />}>
+            <MatchesContent status={selectedStatus} />
+          </Suspense>
+        </div>
       </PageWrapper>
     </>
   );

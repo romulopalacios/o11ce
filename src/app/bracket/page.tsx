@@ -3,16 +3,19 @@ import { Suspense } from "react";
 
 import { BracketColumn } from "@/components/bracket/BracketColumn";
 import EmptyState from "@/components/ui/EmptyState";
+import { PageHero } from "@/components/ui/PageHero";
 import { PageWrapper } from "@/components/ui/PageWrapper";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { bracketService } from "@/server/services/football/bracketService";
 
 export const revalidate = 120;
 
-export const metadata: Metadata = {
-  title: "Bracket - O11CE",
-  description: "Cuadro eliminatorio del Mundial 2026",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Bracket | O11CE",
+    description: "Cuadro eliminatorio del Mundial 2026.",
+  };
+}
 
 async function BracketContent() {
   const bracket = await bracketService.getBracket();
@@ -29,6 +32,12 @@ async function BracketContent() {
   return (
     <>
       <SectionHeader title="cuadro eliminatorio" />
+
+      <div className="mb-6 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 backdrop-blur-sm">
+        <p className="font-mono text-label tracking-[.1em] text-[var(--text2)]">
+          fase de grupos en curso · el bracket se completa cuando terminen los octavos · desde 2 jul 2026
+        </p>
+      </div>
 
       {!hasEliminationMatches ? (
         <EmptyState
@@ -51,8 +60,8 @@ async function BracketContent() {
       )}
 
       {(bracket.THIRD_PLACE?.length ?? 0) > 0 && (
-        <div className="mt-6 pt-6 border-t border-[var(--border)]">
-          <SectionHeader title="tercer lugar" className="mb-2" />
+        <div className="mt-8 border-t border-white/10 pt-7">
+          <SectionHeader title="tercer lugar" className="mb-3" />
           <BracketColumn stage="THIRD_PLACE" matches={bracket.THIRD_PLACE} />
         </div>
       )}
@@ -63,38 +72,29 @@ async function BracketContent() {
 export default function BracketPage() {
   return (
     <>
-      <div className="border-b border-b1">
-        <div className="max-w-[660px] mx-auto px-6 py-7 flex items-end justify-between">
-          <h1 className="font-display text-[48px] leading-none tracking-[.02em] text-t1">
-            BRACKET
-          </h1>
-          <div className="font-mono text-label text-t3 text-right leading-relaxed">
-            Mundial 2026
-            <br />
-            <span className="text-t2">fase eliminatoria</span>
-          </div>
-        </div>
-      </div>
+      <PageHero title="BRACKET" subtitle="fase eliminatoria" meta="Mundial 2026" />
 
       <PageWrapper>
-        <Suspense
-          fallback={(
-            <div className="overflow-x-auto -mx-6 px-6">
-              <div className="flex gap-8 min-w-max animate-pulse">
-                {[4, 2, 1, 1].map((count, col) => (
-                  <div key={col} className="flex flex-col gap-3">
-                    <div className="h-3 w-14 bg-s2 rounded mb-1" />
-                    {Array.from({ length: count }).map((_, i) => (
-                      <div key={i} className="w-[180px] h-[88px] bg-s1 rounded-lg border border-b1" />
-                    ))}
-                  </div>
-                ))}
+        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+          <Suspense
+            fallback={(
+              <div className="overflow-x-auto -mx-2 px-2">
+                <div className="flex gap-8 min-w-max animate-pulse">
+                  {[4, 2, 1, 1].map((count, col) => (
+                    <div key={col} className="flex flex-col gap-4">
+                      <div className="mb-1 h-3 w-14 rounded bg-white/10" />
+                      {Array.from({ length: count }).map((_, i) => (
+                        <div key={i} className="h-[94px] w-[186px] rounded-2xl border border-white/10 bg-white/[0.03]" />
+                      ))}
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          )}
-        >
-          <BracketContent />
-        </Suspense>
+            )}
+          >
+            <BracketContent />
+          </Suspense>
+        </section>
       </PageWrapper>
     </>
   );

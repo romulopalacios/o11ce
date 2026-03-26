@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import AccuracyBadge from "@/components/predictions/AccuracyBadge";
 import PredictionCard from "@/components/predictions/PredictionCard";
 import EmptyState from "@/components/ui/EmptyState";
+import { PageHero } from "@/components/ui/PageHero";
 import { PageWrapper } from "@/components/ui/PageWrapper";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
@@ -58,23 +59,29 @@ async function PredictionsContent() {
 
 export default function PredictionsPage() {
   return (
-    <PageWrapper>
-      <SectionHeader title="predicciones" />
+    <>
+      <PageHero title="PREDICCIONES" subtitle="modelo probabilístico" meta="Mundial 2026" />
 
-      <p className="mb-5 text-[13px] text-t2">
-        Probabilidades para partidos programados a partir de datos del torneo.
-      </p>
+      <PageWrapper>
+        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+          <SectionHeader title="predicciones" />
 
-        <Suspense
-          fallback={(
-            <>
-              <div className="h-[80px] bg-gradient-to-br from-s2 to-s3 border border-b2 rounded-lg mb-5 animate-pulse" />
-              <Skeleton count={4} height="h-[110px]" />
-            </>
-          )}
-        >
-          <PredictionsContent />
-        </Suspense>
-    </PageWrapper>
+          <p className="mb-6 text-[13px] text-[var(--text2)]">
+            Probabilidades para partidos programados a partir de datos del torneo.
+          </p>
+
+          <Suspense
+            fallback={(
+              <>
+                <div className="mb-6 h-[92px] animate-pulse rounded-2xl border border-white/10 bg-white/[0.03]" />
+                <Skeleton count={4} height="h-[126px]" />
+              </>
+            )}
+          >
+            <PredictionsContent />
+          </Suspense>
+        </section>
+      </PageWrapper>
+    </>
   );
 }

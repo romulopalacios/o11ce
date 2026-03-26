@@ -50,28 +50,29 @@ export function TeamListClient({ teams }: TeamListClientProps) {
       {filtered.length === 0 && hasQuery ? (
         <EmptyState message={`sin resultados para "${query}"`} className="mt-3" />
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 stagger">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
           {filtered.map((team) => (
             <Link
               key={team.id}
               href={`/teams/${team.id}`}
               className={cn(
-                "flex items-center gap-2.5 px-3 py-2.5",
-                "bg-s1 border border-b1 rounded-[10px]",
-                "hover:border-b2 hover:bg-s2 transition-colors duration-150",
+                "flex items-center gap-3 px-4 py-3.5",
+                "rounded-2xl border border-[var(--b2)]/55",
+                "bg-[linear-gradient(126deg,rgba(58,168,255,.11),rgba(255,77,66,.08)_46%,rgba(8,16,31,.74))]",
+                "transition-colors duration-150 hover:border-[var(--brand-cyan)]/75",
               )}
             >
               <img
                 src={team.crest ?? "/placeholder-crest.svg"}
                 alt={team.name}
-                className="w-8 h-8 rounded-[6px] border border-b1 shrink-0"
+                className="h-9 w-9 shrink-0 rounded-[8px] border border-[var(--b2)]/55"
                 loading="lazy"
               />
               <div className="min-w-0">
-                <div className="text-[13px] text-t1 truncate">
+                <div className="truncate text-[14px] font-medium text-[var(--text)]">
                   {team.name}
                 </div>
-                <div className="font-mono text-[10px] text-t3 mt-[2px] tracking-[.08em] truncate uppercase">
+                <div className="mt-[2px] truncate font-mono text-[10px] tracking-[.08em] uppercase text-[var(--text3)]">
                   {team.area?.name ?? team.tla}
                 </div>
               </div>

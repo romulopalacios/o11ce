@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { TRPCError } from "@trpc/server";
 
 import LiveMatchClient from "@/components/match/LiveMatchClient";
+import { PageHero } from "@/components/ui/PageHero";
 import { PageWrapper } from "@/components/ui/PageWrapper";
 import db from "@/server/db";
 import * as matchService from "@/server/services/football/matchService";
@@ -77,8 +78,14 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
   });
 
   return (
-    <PageWrapper>
-      <LiveMatchClient initialMatch={match} matchId={parsedMatchId} prediction={prediction} />
-    </PageWrapper>
+    <>
+      <PageHero title="DETALLE DEL PARTIDO" subtitle="seguimiento del partido" meta="Mundial 2026" />
+
+      <PageWrapper>
+        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+          <LiveMatchClient initialMatch={match} matchId={parsedMatchId} prediction={prediction} />
+        </section>
+      </PageWrapper>
+    </>
   );
 }

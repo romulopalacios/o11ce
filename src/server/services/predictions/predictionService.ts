@@ -187,7 +187,13 @@ export async function getScheduledPredictions(): Promise<ScheduledMatchPredictio
             awayTeam: match.awayTeam,
             probabilities: predictMatch(homeStats, awayStats, tournamentAverages),
           };
-        });
+        })
+        .filter((prediction) => (
+          prediction.homeTeam.name !== null
+          && prediction.awayTeam.name !== null
+          && prediction.homeTeam.name !== "Por confirmar"
+          && prediction.awayTeam.name !== "Por confirmar"
+        ));
     },
     TTL.UPCOMING_MATCHES,
   );

@@ -17,8 +17,8 @@ export default function BracketMatch({ match }: BracketMatchProps) {
 
   return (
     <Link href={`/matches/${match.id}`}>
-      <div className="w-[180px] bg-surface border border-border rounded-md overflow-hidden hover:border-border2 transition-colors">
-        <div className={cn("flex items-center justify-between px-3 py-[9px]", "border-b border-border", isHomeWinner && "bg-surface2")}>
+      <div className="w-[180px] overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] transition-colors hover:border-white/20">
+        <div className={cn("flex items-center justify-between border-b border-white/10 px-3 py-[9px]", isHomeWinner && "bg-white/[0.04]")}>
           <div className="flex items-center gap-2 min-w-0">
             <img
               src={match.homeTeam.crest ?? "/placeholder-crest.svg"}
@@ -29,20 +29,24 @@ export default function BracketMatch({ match }: BracketMatchProps) {
             <span
               className={cn(
                 "font-sans text-[12px] truncate",
-                isHomeWinner ? "text-text font-semibold" : "text-text2",
+                isHomeWinner ? "font-semibold text-[var(--text)]" : "text-[var(--text2)]",
               )}
             >
-              {match.homeTeam.name ?? "Por definir"}
+              {match.homeTeam.name && match.homeTeam.name !== "Por confirmar" ? (
+                match.homeTeam.name
+              ) : (
+                <span className="inline-block h-[8px] w-16 rounded-full bg-white/10" />
+              )}
             </span>
           </div>
           {match.status !== "SCHEDULED" && (
-            <span className={cn("font-display text-[17px] leading-none ml-2 shrink-0", isHomeWinner ? "text-text" : "text-text3")}>
+            <span className={cn("ml-2 shrink-0 font-display text-[17px] leading-none", isHomeWinner ? "text-[var(--text)]" : "text-[var(--text3)]")}>
               {homeScore ?? "-"}
             </span>
           )}
         </div>
 
-        <div className={cn("flex items-center justify-between px-3 py-[9px]", isAwayWinner && "bg-surface2")}>
+        <div className={cn("flex items-center justify-between px-3 py-[9px]", isAwayWinner && "bg-white/[0.04]")}>
           <div className="flex items-center gap-2 min-w-0">
             <img
               src={match.awayTeam.crest ?? "/placeholder-crest.svg"}
@@ -53,26 +57,30 @@ export default function BracketMatch({ match }: BracketMatchProps) {
             <span
               className={cn(
                 "font-sans text-[12px] truncate",
-                isAwayWinner ? "text-text font-semibold" : "text-text2",
+                isAwayWinner ? "font-semibold text-[var(--text)]" : "text-[var(--text2)]",
               )}
             >
-              {match.awayTeam.name ?? "Por definir"}
+              {match.awayTeam.name && match.awayTeam.name !== "Por confirmar" ? (
+                match.awayTeam.name
+              ) : (
+                <span className="inline-block h-[8px] w-16 rounded-full bg-white/10" />
+              )}
             </span>
           </div>
           {match.status !== "SCHEDULED" && (
-            <span className={cn("font-display text-[17px] leading-none ml-2 shrink-0", isAwayWinner ? "text-text" : "text-text3")}>
+            <span className={cn("ml-2 shrink-0 font-display text-[17px] leading-none", isAwayWinner ? "text-[var(--text)]" : "text-[var(--text3)]")}>
               {awayScore ?? "-"}
             </span>
           )}
         </div>
 
-        <div className="px-3 py-[5px] bg-bg border-t border-border">
+        <div className="border-t border-white/10 bg-white/[0.03] px-3 py-[5px]">
           {match.status === "IN_PLAY" ? (
             <LiveBadge minute={match.minute} />
           ) : match.status === "FINISHED" ? (
-            <span className="font-mono text-label text-text3">FIN</span>
+            <span className="font-mono text-label text-[var(--text3)]">FIN</span>
           ) : (
-            <span className="font-mono text-label text-text3">
+            <span className="font-mono text-label text-[var(--text3)]">
               {new Intl.DateTimeFormat("es", {
                 day: "numeric",
                 month: "short",

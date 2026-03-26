@@ -61,7 +61,7 @@ export default function EventTimeline({ match }: EventTimelineProps) {
   const events = buildTimeline(match);
 
   return (
-    <div className="bg-surface border border-border border-t-0 rounded-b-lg px-4 pb-3 pt-[2px]">
+    <div className="rounded-b-2xl border border-t-0 border-white/10 bg-white/[0.03] px-4 pb-3 pt-[2px]">
       {events.length === 0 ? (
         <EmptyState message="sin eventos disponibles" className="border-0 py-4" />
       ) : (
@@ -72,10 +72,10 @@ export default function EventTimeline({ match }: EventTimelineProps) {
             return (
               <li
                 key={event.id}
-                className="flex items-center gap-3 py-[9px] border-b border-border last:border-0 animate-slide-left"
+                className="animate-slide-left flex items-center gap-3 border-b border-white/10 py-[9px] last:border-0"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
-                <span className="font-mono text-label text-text3 w-6 text-right shrink-0">{event.minute}'</span>
+                <span className="w-6 shrink-0 text-right font-mono text-label text-[var(--text3)]">{event.minute}'</span>
 
                 <div
                   className={cn(
@@ -89,11 +89,11 @@ export default function EventTimeline({ match }: EventTimelineProps) {
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-sans text-body font-medium text-text truncate">{event.playerName ?? "—"}</p>
-                  {event.detail && <p className="font-mono text-label text-text2 mt-[1px]">{event.detail}</p>}
+                  <p className="truncate font-sans text-body font-medium text-[var(--text)]">{event.playerName ?? "—"}</p>
+                  {event.detail ? <p className="mt-[1px] font-mono text-label text-[var(--text2)]">{event.detail}</p> : null}
                 </div>
 
-                <span className="font-mono text-label text-text3 shrink-0">{event.teamCode}</span>
+                <span className="shrink-0 font-mono text-label text-[var(--text3)]">{event.teamCode}</span>
               </li>
             );
           })}

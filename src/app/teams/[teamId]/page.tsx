@@ -6,6 +6,8 @@ import { TRPCError } from "@trpc/server";
 import StandingsTable from "@/components/groups/StandingsTable";
 import MatchCard from "@/components/match/MatchCard";
 import TeamProfile from "@/components/teams/TeamProfile";
+import { PageHero } from "@/components/ui/PageHero";
+import { PageWrapper } from "@/components/ui/PageWrapper";
 import * as groupService from "@/server/services/football/groupService";
 import * as matchService from "@/server/services/football/matchService";
 import * as teamService from "@/server/services/football/teamService";
@@ -90,45 +92,48 @@ export default async function TeamPage({ params }: TeamPageProps) {
   });
 
   return (
-    <main className="mx-auto w-full max-w-4xl px-6 py-10 md:px-10">
-      <header className="mb-8">
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">Perfil del equipo</h1>
-      </header>
-      <TeamProfile team={team} />
+    <>
+      <PageHero title="PERFIL DEL EQUIPO" subtitle="detalle de selección" meta="Mundial 2026" />
 
-      <div className="mt-4">
-        <Link
-          href={`/compare?a=${parsedTeamId}`}
-          className="font-mono text-[11px] text-[var(--text2)] hover:text-[var(--accent)] transition-colors"
-        >
-          comparar con otro equipo →
-        </Link>
-      </div>
+      <PageWrapper>
+        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+          <TeamProfile team={team} />
 
-      <section className="mt-8">
-        <h2 className="mb-3 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
-          partidos en el torneo
-        </h2>
-
-        {filteredMatches.length > 0 ? (
-          <div className="space-y-2">
-            {filteredMatches.map((match, index) => (
-              <MatchCard key={match.id} match={match} animationDelayMs={index * 60} />
-            ))}
+          <div className="mt-5">
+            <Link
+              href={`/compare?a=${parsedTeamId}`}
+              className="font-mono text-[11px] tracking-[.08em] text-[var(--text2)] transition-colors hover:text-[var(--accent)]"
+            >
+              comparar con otro equipo →
+            </Link>
           </div>
-        ) : (
-          <p className="text-[13px] text-[var(--text2)]">sin partidos registrados</p>
-        )}
-      </section>
 
-      {teamGroup ? (
-        <section className="mt-8">
-          <h2 className="mb-3 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
-            posicion en el grupo
-          </h2>
-          <StandingsTable standings={[teamGroup]} />
+          <section className="mt-9 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+            <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
+              partidos en el torneo
+            </h2>
+
+            {filteredMatches.length > 0 ? (
+              <div className="space-y-3">
+                {filteredMatches.map((match, index) => (
+                  <MatchCard key={match.id} match={match} animationDelayMs={index * 60} />
+                ))}
+              </div>
+            ) : (
+              <p className="text-[13px] text-[var(--text2)]">sin partidos registrados</p>
+            )}
+          </section>
+
+          {teamGroup ? (
+            <section className="mt-9 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+              <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
+                posicion en el grupo
+              </h2>
+              <StandingsTable standings={[teamGroup]} />
+            </section>
+          ) : null}
         </section>
-      ) : null}
-    </main>
+      </PageWrapper>
+    </>
   );
 }

@@ -6,17 +6,17 @@ interface AccuracyBadgeProps {
 
 export default function AccuracyBadge({ accuracy, correct, total }: AccuracyBadgeProps) {
   return (
-    <div className="mb-5 flex items-center gap-3 border border-b1 rounded-[10px] px-3.5 py-3 bg-s1">
+    <div className="mb-6 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur-sm">
       <div>
-        <span className="font-display text-[28px] leading-none text-ac">
+        <span className="font-display text-[32px] leading-none text-[var(--accent)]">
           {accuracy}%
         </span>
       </div>
       <div>
-        <div className="text-[13px] text-t1">
+        <div className="text-[13px] font-medium text-[var(--text)]">
           precision del algoritmo
         </div>
-        <div className="mt-[2px] font-mono text-[10px] text-t3 tracking-[.08em] uppercase">
+        <div className="mt-[3px] font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">
           {correct} de {total} predicciones evaluadas
         </div>
       </div>
