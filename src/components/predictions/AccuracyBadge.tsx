@@ -6,7 +6,7 @@ interface AccuracyBadgeProps {
 
 export default function AccuracyBadge({ accuracy, correct, total }: AccuracyBadgeProps) {
   return (
-    <div className="mb-6 flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.04] px-5 py-4 backdrop-blur-sm">
+    <div className="mb-6 flex items-center gap-4 rounded-2xl border border-[var(--b2)]/20 bg-[linear-gradient(126deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.5))] px-5 py-4 backdrop-blur-sm">
       <div>
         <span className="font-display text-[32px] leading-none text-[var(--accent)]">
           {accuracy}%

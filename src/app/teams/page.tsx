@@ -1,36 +1,36 @@
 import type { Metadata } from "next";
-
+import { footballAPIClient } from "@/server/services/football/client";
 import { TeamListClient } from "@/components/teams/TeamListClient";
-import { PageHero } from "@/components/ui/PageHero";
-import { PageWrapper } from "@/components/ui/PageWrapper";
-import { SectionHeader } from "@/components/ui/SectionHeader";
-import * as teamService from "@/server/services/football/teamService";
+import { Users } from "lucide-react";
 
-export const revalidate = 3600;
+export const metadata: Metadata = {
+  title: "Equipos - O11CE",
+  description: "Listado de equipos participantes en el torneo.",
+};
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Selecciones | O11CE",
-    description: "Lista de selecciones del Mundial 2026.",
-  };
-}
+export const revalidate = 86400;
 
 export default async function TeamsPage() {
-  const allTeams = await teamService.getAll();
+  const teamsData = await footballAPIClient.getTeams();
 
   return (
-    <>
-      <PageHero title="EQUIPOS" subtitle="selecciones nacionales" meta="Mundial 2026" />
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <header className="mb-10">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500">
+            <Users className="h-5 w-5" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+            Equipos Participantes
+          </h1>
+        </div>
+        <p className="text-zinc-500 max-w-2xl text-lg">
+          Navega entre todas las selecciones, descubre sus grupos y accede a su estadística detallada.
+        </p>
+      </header>
 
-      <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
-          <SectionHeader title="selecciones" />
-
-          <section>
-            <TeamListClient teams={allTeams} />
-          </section>
-        </section>
-      </PageWrapper>
-    </>
+      <TeamListClient teams={teamsData?.teams || []} />
+    </div>
   );
 }
+

@@ -8,6 +8,7 @@ interface TournamentContext {
   daysToWorldCup: number;
   daysToStart: number;
   daysToFinal: number;
+  worldCupStartIso: string;
 }
 
 function formatPhase(stage: string): string {
@@ -53,7 +54,7 @@ export async function getTournamentContext(): Promise<TournamentContext> {
   );
   const daysToStart = Math.max(
     0,
-    Math.ceil((new Date("2026-06-11").getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
+    Math.ceil((worldCupStart.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
   );
   const daysToFinal = Math.max(
     0,
@@ -71,5 +72,6 @@ export async function getTournamentContext(): Promise<TournamentContext> {
     daysToWorldCup,
     daysToStart,
     daysToFinal,
+    worldCupStartIso: worldCupStart.toISOString(),
   };
 }

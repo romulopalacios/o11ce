@@ -46,8 +46,8 @@ async function TeamsGrid({ selectedAId }: TeamsGridProps) {
           href={!selectedAId ? `/compare?a=${team.id}` : `/compare?a=${selectedAId}&b=${team.id}`}
           className={cn(
             "flex items-center gap-3 rounded-2xl border px-4 py-3",
-            "bg-white/[0.03] transition-all duration-150 hover:border-white/20 hover:bg-white/[0.05]",
-            String(team.id) === String(selectedAId) ? "border-ac/50 bg-ac/10" : "border-white/10",
+            "bg-[linear-gradient(125deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_44%,rgba(8,16,31,.5))] transition-all duration-150 hover:border-[var(--brand-cyan)]/45",
+            String(team.id) === String(selectedAId) ? "border-[var(--brand-cyan)]/45 shadow-[0_0_0_1px_rgba(52,216,255,0.12)]" : "border-[var(--b2)]/16",
           )}
         >
           <img
@@ -73,8 +73,8 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
   const { teamA, teamB, h2h } = data;
 
   return (
-    <>
-      <div className="mb-4">
+    <div className="stack-5">
+      <div>
         <Link
           href="/compare"
           className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] transition-colors duration-150 hover:text-[var(--text2)]"
@@ -83,7 +83,12 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
         </Link>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-white/10 bg-white/[0.03] p-4 sm:p-5">
+      <div className="rounded-3xl border border-[var(--b2)]/16 bg-[linear-gradient(125deg,rgba(58,168,255,.08),rgba(255,77,66,.07)_45%,rgba(8,16,31,.5))] p-4 sm:p-5">
+        <div className="mb-4 flex justify-center">
+          <span className="border-b border-[var(--b2)]/35 pb-1 font-mono text-[10px] tracking-[.14em] uppercase text-[var(--text2)]">
+            duelo directo
+          </span>
+        </div>
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
           <div className="flex flex-col items-center gap-2 min-w-0">
             <img
@@ -100,7 +105,7 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
             ) : null}
           </div>
 
-          <span className="font-mono text-[10px] tracking-[.12em] uppercase text-[var(--text3)] sm:text-[11px]">vs</span>
+          <span className="font-display text-[22px] leading-none text-[var(--gold)] sm:text-[26px]">VS</span>
 
           <div className="flex flex-col items-center gap-2 min-w-0">
             <img
@@ -119,7 +124,7 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
         </div>
       </div>
 
-      <div className="mb-8">
+      <div>
         <SectionHeader title="estadisticas en el torneo" className="mb-4" />
 
         <StatBar label="puntos" valueA={teamA.stats.points} valueB={teamB.stats.points} />
@@ -135,7 +140,7 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
         <StatBar label="partidos" valueA={teamA.stats.played} valueB={teamB.stats.played} />
       </div>
 
-      <div className="mb-8">
+      <div>
         <SectionHeader title="enfrentamientos directos" className="mb-3" />
 
         {h2h.length > 0 ? (
@@ -151,7 +156,7 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
         )}
       </div>
 
-      <div className="border-t border-white/10 pt-5 text-center">
+      <div className="pt-5 text-center">
         <Link
           href="/compare"
           className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] transition-colors duration-150 hover:text-ac"
@@ -159,7 +164,7 @@ async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
           comparar otros equipos →
         </Link>
       </div>
-    </>
+    </div>
   );
 }
 
@@ -174,10 +179,10 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
       <PageHero title="COMPARAR" subtitle="comparador de selecciones" meta="Mundial 2026" />
 
       <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
           <SectionHeader title="comparar" />
 
-          <p className="mb-6 text-[13px] text-[var(--text2)]">
+          <p className="ty-body text-[var(--text2)]">
             Selecciona dos equipos para ver comparativa de rendimiento y enfrentamientos directos.
           </p>
 

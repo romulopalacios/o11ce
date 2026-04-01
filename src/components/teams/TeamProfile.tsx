@@ -7,13 +7,13 @@ interface TeamProfileProps {
 
 export default function TeamProfile({ team }: TeamProfileProps) {
   return (
-    <Card className="rounded-2xl border-white/10 bg-white/[0.03]">
+    <Card className="rounded-2xl border-[var(--b2)]/16 bg-[linear-gradient(128deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.48))]">
       <CardHeader className="p-6">
         <CardTitle className="text-[28px] leading-none tracking-[.02em] text-[var(--text)]">{team.name}</CardTitle>
       </CardHeader>
       <CardContent className="p-6 pt-0">
         <div className="grid gap-6 md:grid-cols-[104px_1fr] md:items-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03]">
+          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--b2)]/16 bg-[var(--brand-navy)]/34">
             {team.crest ? (
               <img src={team.crest} alt={`Escudo de ${team.name}`} className="h-16 w-16 object-contain" />
             ) : (

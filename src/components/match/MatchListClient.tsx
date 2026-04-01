@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback } from "react";
-
 import { useSearch } from "@/hooks/useSearch";
 import { SearchInput } from "@/components/ui/SearchInput";
 import EmptyState from "@/components/ui/EmptyState";
@@ -19,15 +18,12 @@ function getTeamAliases(name: string | undefined, tla: string | undefined): stri
   if (normalizedTla === "BRA") {
     aliases.push("brasil", "brazil");
   }
-
   if (normalizedTla === "ARG") {
     aliases.push("argentina");
   }
-
   if (name) {
     aliases.push(name);
   }
-
   if (tla) {
     aliases.push(tla);
   }
@@ -48,18 +44,21 @@ export function MatchListClient({ matches }: MatchListClientProps) {
   const { query, setQuery, filtered, hasQuery } = useSearch(matches, searchFields);
 
   return (
-    <div>
-      <SearchInput
-        value={query}
-        onChange={setQuery}
-        placeholder="buscar equipo, grupo o fase..."
-        resultCount={hasQuery ? filtered.length : undefined}
-      />
+    <div className="space-y-8">
+      <div className="relative z-10 w-full max-w-md">
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="Buscar equipo, grupo o fase..."
+          resultCount={hasQuery ? filtered.length : undefined}
+          
+        />
+      </div>
 
       {filtered.length === 0 && hasQuery ? (
-        <EmptyState message={`sin resultados para "${query}"`} className="mt-3" />
+        <EmptyState message={`Sin resultados para "${query}"`} className="mt-8 border-dashed border-zinc-800 bg-zinc-900/20" />
       ) : (
-        <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3 stagger">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
@@ -68,3 +67,4 @@ export function MatchListClient({ matches }: MatchListClientProps) {
     </div>
   );
 }
+

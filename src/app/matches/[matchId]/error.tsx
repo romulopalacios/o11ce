@@ -17,7 +17,7 @@ export default function MatchDetailErrorPage({ error, reset }: MatchDetailErrorP
       <button
         type="button"
         onClick={reset}
-        className="mt-4 rounded-full border border-[var(--b2)]/75 bg-[var(--s2)]/80 px-4 py-2 font-mono text-[11px] tracking-[.12em] uppercase text-[var(--text)] transition-colors hover:border-[var(--brand-cyan)]"
+        className="mt-4 rounded-md border border-[var(--b2)]/75 bg-[var(--s2)]/80 px-4 py-2 font-mono text-[11px] tracking-[.12em] uppercase text-[var(--text)] transition-colors hover:border-[var(--brand-cyan)]"
       >
         Reintentar
       </button>

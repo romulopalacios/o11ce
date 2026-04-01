@@ -97,12 +97,12 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
   const isPost = match.status === "FINISHED";
 
   return (
-    <section className="space-y-5">
+    <section className="stack-5">
       <div>
         <ScoreBoard match={match} hasTimeline={!isPre} />
         {isPre ? (
-          <div className="mt-1 rounded-b-2xl border border-t-0 border-white/10 bg-white/[0.03] px-5 py-4 text-center">
-            <p className="mb-2 font-mono text-label tracking-[.1em] text-[var(--text3)]">el partido comienza en</p>
+          <div className="mt-1 rounded-b-2xl border border-t-0 border-[var(--b2)]/45 bg-[var(--brand-navy)]/45 px-5 py-4 text-center">
+            <p className="mb-2 font-mono text-label tracking-[.1em] text-zinc-500">el partido comienza en</p>
             <MatchCountdown utcDate={match.utcDate} />
           </div>
         ) : (
@@ -110,25 +110,25 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
         )}
       </div>
 
-      <div className="space-y-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5 sm:py-5">
-        <span className="block font-mono text-label tracking-[.1em] uppercase text-[var(--text3)]">
+      <div className="space-y-2 rounded-2xl border border-[var(--b2)]/45 bg-[var(--brand-navy)]/45 px-4 py-4 sm:px-5 sm:py-5">
+        <span className="block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
           información general
         </span>
         <div className="grid grid-cols-2 gap-x-4 gap-y-1">
           <div>
-            <span className="font-mono text-label text-[var(--text3)]">estado</span>
+            <span className="font-mono text-label text-zinc-500">estado</span>
             <p className="mt-[2px] text-body text-[var(--text)]">{formatStatus(match.status)}</p>
           </div>
           <div>
-            <span className="font-mono text-label text-[var(--text3)]">fase</span>
+            <span className="font-mono text-label text-zinc-500">fase</span>
             <p className="mt-[2px] text-body text-[var(--text)]">{formatStage(match.stage)}</p>
           </div>
           <div>
-            <span className="font-mono text-label text-[var(--text3)]">grupo</span>
+            <span className="font-mono text-label text-zinc-500">grupo</span>
             <p className="mt-[2px] text-body text-[var(--text)]">{match.group ?? "—"}</p>
           </div>
           <div>
-            <span className="font-mono text-label text-[var(--text3)]">fecha</span>
+            <span className="font-mono text-label text-zinc-500">fecha</span>
             <p className="mt-[2px] text-body text-[var(--text)]">
               {new Intl.DateTimeFormat("es", {
                 day: "numeric",
@@ -142,8 +142,8 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
       </div>
 
       {!isPre && (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-[var(--text3)]">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
+          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
             goles
           </span>
           {match.goals.length === 0 ? (
@@ -153,9 +153,9 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
               {match.goals.map((goal, index) => (
                 <li
                   key={`${goal.team.id}-${goal.minute}-${index}`}
-                  className="flex items-center gap-3 border-b border-white/10 py-1.5 last:border-0"
+                  className="flex items-center gap-3 py-1.5"
                 >
-                  <span className="w-7 shrink-0 text-right font-mono text-label text-[var(--text3)]">
+                  <span className="w-7 shrink-0 text-right font-mono text-label text-zinc-500">
                     {formatMinute(goal.minute, goal.injuryTime)}
                   </span>
                   <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] bg-[#22c55e15] text-[11px] text-[#22c55e]">
@@ -163,10 +163,10 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
                   </span>
                   <div className="flex-1 min-w-0">
                     <span className="text-body text-[var(--text)]">{goal.scorer.name}</span>
-                    <span className="ml-2 text-caption text-[var(--text2)]">{goal.team.name}</span>
+                    <span className="ml-2 text-caption text-zinc-300">{goal.team.name}</span>
                   </div>
                   {goal.type !== "REGULAR" && (
-                    <span className="shrink-0 font-mono text-label text-[var(--text3)]">
+                    <span className="shrink-0 font-mono text-label text-zinc-500">
                       {goal.type === "PENALTY" ? "pen." : "p.p."}
                     </span>
                   )}
@@ -178,36 +178,36 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
       )}
 
       {(isLive || isPost) && (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-white/[0.02] px-4 py-3">
-          <p className="text-center font-mono text-label text-[var(--text3)]">
+        <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 border border-zinc-800 px-4 py-3">
+          <p className="text-center font-mono text-label text-zinc-500">
             tarjetas y sustituciones no disponibles en el plan actual
           </p>
         </div>
       )}
 
       {isPre && prediction && (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-[var(--text3)]">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
+          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
             predicción
           </span>
 
           <div>
-            <p className="mb-1 font-mono text-label text-[var(--text3)]">predicción</p>
-            <p className="font-mono text-caption text-[var(--text2)]">{getPredictedResultLabel(prediction)}</p>
+            <p className="mb-1 font-mono text-label text-zinc-500">predicción</p>
+            <p className="font-mono text-caption text-zinc-300">{getPredictedResultLabel(prediction)}</p>
           </div>
         </div>
       )}
 
       {isPost && prediction && (
-        <div className="rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-[var(--text3)]">
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
+          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
             predicción vs resultado
           </span>
 
           <div className="flex items-center justify-between gap-3 flex-wrap">
             <div>
-              <p className="mb-1 font-mono text-label text-[var(--text3)]">predicción</p>
-              <p className="font-mono text-caption text-[var(--text2)]">{getPredictedResultLabel(prediction)}</p>
+              <p className="mb-1 font-mono text-label text-zinc-500">predicción</p>
+              <p className="font-mono text-caption text-zinc-300">{getPredictedResultLabel(prediction)}</p>
             </div>
 
             {prediction.wasCorrect !== null && (
@@ -225,8 +225,8 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
             )}
 
             <div className="text-right">
-              <p className="mb-1 font-mono text-label text-[var(--text3)]">resultado</p>
-              <p className="font-mono text-caption text-[var(--text2)]">
+              <p className="mb-1 font-mono text-label text-zinc-500">resultado</p>
+              <p className="font-mono text-caption text-zinc-300">
                 {getActualResultLabel(prediction.actualResult)}
               </p>
             </div>

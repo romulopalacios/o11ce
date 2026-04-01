@@ -6,18 +6,18 @@ interface PageHeroProps {
 
 export function PageHero({ title, subtitle, meta }: PageHeroProps) {
   return (
-    <section className="page-hero">
-      <div className="relative mx-auto flex max-w-[1360px] items-end justify-between gap-4 px-4 py-9 sm:px-6 sm:py-11">
-        <div>
-          <p className="mb-2 font-mono text-[10px] tracking-[.18em] uppercase text-[var(--text2)]">
+    <section className="border-b border-zinc-800 bg-zinc-950">
+      <div className="mx-auto flex max-w-7xl flex-col items-start justify-between gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-end lg:px-8 lg:py-12">
+        <div className="max-w-4xl">
+          <p className="mb-2 text-xs font-semibold tracking-wider text-blue-500 uppercase">
             {meta}
           </p>
-          <h1 className="font-display text-[42px] leading-none tracking-[.025em] text-white sm:text-[56px]">
+          <h1 className="text-4xl font-extrabold tracking-tight text-zinc-50 sm:text-5xl lg:text-6xl">
             {title}
           </h1>
         </div>
 
-        <div className="rounded-full border border-[var(--b2)]/70 bg-[var(--brand-navy)]/72 px-3 py-1.5 font-mono text-[10px] tracking-[.12em] uppercase text-[var(--text2)]">
+        <div className="rounded-full border border-zinc-800 bg-zinc-900 px-4 py-1.5 text-xs font-medium text-zinc-300">
           {subtitle}
         </div>
       </div>

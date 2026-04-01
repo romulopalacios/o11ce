@@ -63,10 +63,10 @@ export default function PredictionsPage() {
       <PageHero title="PREDICCIONES" subtitle="modelo probabilístico" meta="Mundial 2026" />
 
       <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
           <SectionHeader title="predicciones" />
 
-          <p className="mb-6 text-[13px] text-[var(--text2)]">
+          <p className="ty-body text-[var(--text2)]">
             Probabilidades para partidos programados a partir de datos del torneo.
           </p>
 

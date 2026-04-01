@@ -61,7 +61,7 @@ export default function EventTimeline({ match }: EventTimelineProps) {
   const events = buildTimeline(match);
 
   return (
-    <div className="rounded-b-2xl border border-t-0 border-white/10 bg-white/[0.03] px-4 pb-3 pt-[2px]">
+    <div className="rounded-b-2xl border border-t-0 border-[var(--b2)]/16 bg-[var(--brand-navy)]/34 px-4 pb-3 pt-[2px]">
       {events.length === 0 ? (
         <EmptyState message="sin eventos disponibles" className="border-0 py-4" />
       ) : (
@@ -72,7 +72,7 @@ export default function EventTimeline({ match }: EventTimelineProps) {
             return (
               <li
                 key={event.id}
-                className="animate-slide-left flex items-center gap-3 border-b border-white/10 py-[9px] last:border-0"
+                className="animate-slide-left flex items-center gap-3 py-[9px]"
                 style={{ animationDelay: `${i * 40}ms` }}
               >
                 <span className="w-6 shrink-0 text-right font-mono text-label text-[var(--text3)]">{event.minute}'</span>

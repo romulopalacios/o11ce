@@ -10,19 +10,19 @@ interface SectionHeaderProps {
 export function SectionHeader({ title, action, className }: SectionHeaderProps) {
   return (
     <div className={cn(
-      'flex items-center justify-between gap-3 mb-6 sm:mb-7',
+      'mb-6 flex items-center justify-between gap-3',
       className
     )}>
-      <div className="flex items-center gap-2.5">
-        <span className="broadcast-dot h-2 w-2 rounded-full bg-[var(--brand-red)]" />
-        <span className="font-mono text-[10px] sm:text-[11px] font-semibold tracking-[.2em] uppercase text-[var(--text2)]">
+      <div className="flex items-center gap-3">
+        <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+        <h2 className="text-lg font-bold text-zinc-50">
           {title}
-        </span>
+        </h2>
       </div>
       {action && (
         <Link href={action.href}
-              className="rounded-full border border-[var(--b2)]/75 bg-[var(--brand-navy)]/85 px-3.5 py-1.5 font-mono text-[10px] sm:text-[11px] tracking-[.1em] uppercase text-[var(--text2)] transition-all duration-150 hover:border-[var(--brand-cyan)] hover:text-[var(--brand-cyan)]">
-          {action.label} →
+              className="inline-flex items-center gap-1 text-sm font-medium text-zinc-400 transition-colors hover:text-zinc-50">
+          {action.label} &rarr;
         </Link>
       )}
     </div>

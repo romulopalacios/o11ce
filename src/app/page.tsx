@@ -1,153 +1,260 @@
 import type { Metadata } from 'next'
-import { Suspense } from 'react'
+import Link from 'next/link'
 
-import { GroupsCarousel } from '../components/groups/GroupsCarousel'
-import { CountdownBanner } from '@/components/tournament/CountdownBanner'
+import GroupsCarousel from '@/components/groups/GroupsCarousel';
+import MatchCard from '@/components/match/MatchCard'
+import StartCountdownKpi from '@/components/tournament/StartCountdownKpi'
+import type { DashboardGroup } from '@/lib/mock/tournamentDashboard'
 import * as groupService from '@/server/services/football/groupService'
+import * as matchService from '@/server/services/football/matchService'
 import * as tournamentService from '@/server/services/football/tournamentService'
+import { CalendarDays, Trophy, Activity, Target } from 'lucide-react'
 
-export const revalidate = 300
+export const revalidate = 120
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Inicio | O11CE',
-    description: 'Portada editorial del Mundial 2026 con hero, contador en vivo y carrusel de grupos.',
+    title: 'Dashboard',
+    description: 'Panel principal O11CE para gestion de torneos deportivos',
   }
 }
 
-async function HeroSection() {
-  const context = await tournamentService.getTournamentContext()
+interface HomeApiDashboardData {
+  tournamentName: string
+  subtitle: string
+  heroDescription: string
+  phase: string
+  matchesPlayed: number
+  totalGoals: number
+  goalsPerMatch: string
+  worldCupStartIso: string
+  daysToStart: number
+  daysToFinal: number
+  matches: Awaited<ReturnType<typeof matchService.getAll>>
+  groups: DashboardGroup[]
+}
 
+const WORLD_CUP_GROUPS = Array.from({ length: 12 }, (_, index) => `Group ${String.fromCharCode(65 + index)}`)
+
+function parseGroupLetter(rawGroup?: string | null): string | null {
+  const normalized = (rawGroup ?? '').trim().toUpperCase()
+  if (!normalized) return null
+  const match = normalized.match(/([A-L])$/)
+  if (!match?.[1]) return null
+  return match[1]
+}
+
+function toWorldCupGroupName(rawGroup?: string | null): string {
+  const letter = parseGroupLetter(rawGroup)
+  return letter ? `Group ${letter}` : 'Group A'
+}
+
+interface KpiCardProps {
+  label: string
+  value: string
+  icon?: React.ReactNode
+  accentClass?: string
+  className?: string
+}
+
+function KpiCard({ label, value, icon, accentClass = "bg-zinc-800", className }: KpiCardProps) {
   return (
-    <section className="relative overflow-hidden rounded-[28px] border border-[var(--b2)]/50">
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&w=1800&q=80')",
-        }}
-      />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[rgba(5,9,16,0.94)] via-[rgba(7,14,24,0.85)] to-[rgba(7,14,24,0.45)]" />
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_20%_12%,rgba(58,168,255,0.28),transparent_42%),radial-gradient(circle_at_80%_18%,rgba(255,77,66,0.22),transparent_42%)]" />
-
-      <div className="relative z-10 px-6 pb-10 pt-20 sm:px-10">
-        <div className="mb-8 max-w-[78ch]">
-          <p className="font-mono text-label tracking-[.18em] uppercase text-[var(--text2)]">
-              mundial 2026 · cobertura central
-          </p>
-
-          <div className="mt-3 flex flex-wrap items-center gap-3">
-            <h1 className="max-w-[24ch] font-display text-[36px] leading-[0.94] tracking-[.02em] text-white sm:text-[56px]">
-              EL CAMINO AL MUNDIAL
-            </h1>
-            <span className="inline-block rounded-full border border-[var(--brand-cyan)]/35 bg-[var(--brand-cyan)]/15 px-3 py-1 text-xs font-bold tracking-widest text-[var(--brand-cyan)] uppercase">
-              pre-torneo
-            </span>
-          </div>
-
-          <p className="mt-3 max-w-[54ch] text-[13px] text-[var(--text2)] sm:text-[14px]">
-            Sigue la cuenta regresiva, el estado general del torneo y la evolución de cada grupo en una sola vista.
-          </p>
+    <article className={`relative overflow-hidden rounded-xl border border-zinc-800/80 bg-zinc-900/40 p-5 shadow-sm transition-all hover:bg-zinc-900/80 hover:border-zinc-700/80 ${className ?? ''}`}>
+      <div className={`absolute left-0 top-0 w-1 h-full opacity-60 ${accentClass}`}></div>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-[10px] font-semibold uppercase tracking-[0.15em] text-zinc-500">{label}</p>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-zinc-50">{value}</p>
         </div>
-
-        <div className="mt-12 rounded-3xl border border-[var(--b2)]/60 bg-[linear-gradient(125deg,rgba(58,168,255,.14),rgba(255,77,66,.12)_42%,rgba(10,18,34,.8))] p-8 text-center shadow-[0_24px_55px_rgba(0,0,0,.35)]">
-          <p className="font-mono text-label tracking-[.18em] uppercase text-[var(--brand-cyan)]">partido inaugural</p>
-          <p className="mt-3 text-3xl font-bold text-white sm:text-4xl">MEXICO VS SUDAFRICA</p>
-          <p className="mt-2 font-mono text-label tracking-[.12em] text-[var(--text2)]">11 junio 2026 · estadio azteca</p>
-        </div>
-
-        <div className="mt-10 grid grid-cols-2 gap-0 border-y border-[var(--b2)]/45 sm:grid-cols-4">
-          <div className="bg-[var(--brand-navy)]/35 px-4 py-4 backdrop-blur-sm sm:px-5 sm:py-5">
-            <span className="font-display text-[40px] leading-none text-[var(--text)]">{context.matchesPlayed}</span>
-            <p className="mt-2 font-mono text-label tracking-[.12em] uppercase text-[var(--text2)]">partidos</p>
-            <p className="mt-1 font-mono text-label text-[var(--text3)]">{context.matchesPlayed === 0 ? 'arranca el 11 jun' : 'de 104 totales'}</p>
+        {icon && (
+          <div className="rounded-lg bg-zinc-800/50 p-2 text-zinc-400">
+            {icon}
           </div>
-
-          <div className="bg-[var(--brand-navy)]/35 px-4 py-4 backdrop-blur-sm sm:border-l sm:border-[var(--b2)]/45 sm:px-5 sm:py-5">
-            <span className="font-display text-[40px] leading-none text-[var(--text)]">{context.totalGoals}</span>
-            <p className="mt-2 font-mono text-label tracking-[.12em] uppercase text-[var(--text2)]">goles</p>
-            <p className="mt-1 font-mono text-label text-[var(--text3)]">{context.totalGoals === 0 ? 'primer gol pendiente' : `${context.goalsPerMatch} por partido`}</p>
-          </div>
-
-          <div className="bg-gradient-to-b from-[var(--brand-cyan)]/18 to-[var(--brand-navy)]/32 px-4 py-4 backdrop-blur-sm sm:border-l sm:border-[var(--b2)]/45 sm:px-5 sm:py-5">
-            <span className="font-display text-[40px] leading-none text-[var(--brand-cyan)]">{context.daysToStart}</span>
-            <p className="mt-2 font-mono text-label tracking-[.12em] uppercase text-[var(--text2)]">dias al inicio</p>
-            <p className="mt-1 font-mono text-label text-[var(--text3)]">11 jun 2026</p>
-          </div>
-
-          <div className="bg-gradient-to-b from-[var(--brand-red)]/18 to-[var(--brand-navy)]/32 px-4 py-4 backdrop-blur-sm sm:border-l sm:border-[var(--b2)]/45 sm:px-5 sm:py-5">
-            <span className="font-display text-[40px] leading-none text-[var(--gold)]">{context.daysToFinal}</span>
-            <p className="mt-2 font-mono text-label tracking-[.12em] uppercase text-[var(--text2)]">dias a la final</p>
-            <p className="mt-1 font-mono text-label text-[var(--text3)]">19 jul 2026</p>
-          </div>
-        </div>
-
-        <div className="mt-6 border-y border-white/10 bg-black/24 backdrop-blur-sm">
-          <CountdownBanner />
-        </div>
+        )}
       </div>
-    </section>
+    </article>
   )
 }
 
-async function GroupsSection() {
-  const rawGroups = await groupService.getStandings()
-  const groups = rawGroups.map((group, idx) => ({
-    group: group.group ?? `Grupo ${idx + 1}`,
-    standings: group.table.map((entry) => ({
-      position: entry.position,
-      team: {
-        id: entry.team.id,
-        name: entry.team.name,
-        crest: entry.team.crest,
-      },
-      playedGames: entry.playedGames,
-      points: entry.points,
-    })),
-  }))
+async function getHomeDashboardDataFromApi(): Promise<HomeApiDashboardData> {
+  try {
+    const [context, matches, standings] = await Promise.all([
+      tournamentService.getTournamentContext(),
+      matchService.getAll(),
+      groupService.getStandings(),
+    ])
 
-  return <GroupsCarousel groups={groups} />
+    const selectedMatches = matches
+      .filter((match) => match.status === 'IN_PLAY' || match.status === 'SCHEDULED' || match.status === 'FINISHED')
+      .sort((a, b) => {
+        const weight = (status: string): number => {
+          if (status === 'IN_PLAY') return 0
+          if (status === 'SCHEDULED') return 1
+          return 2
+        }
+        const byStatus = weight(a.status) - weight(b.status)
+        if (byStatus !== 0) return byStatus
+        return new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime()
+      })
+      .slice(0, 6)
+
+    const groupsMap = new Map<string, DashboardGroup>()
+    standings.forEach((group) => {
+      const groupName = toWorldCupGroupName(group.group)
+      groupsMap.set(groupName, {
+        name: groupName,
+        standings: group.table.map((entry) => ({
+          position: entry.position,
+          teamId: entry.team.id,
+          teamName: entry.team.name,
+          played: entry.playedGames,
+          won: entry.won,
+          draw: entry.draw,
+          lost: entry.lost,
+          points: entry.points,
+          goalDifference: entry.goalDifference,
+        })),
+      })
+    })
+
+    const groups: DashboardGroup[] = WORLD_CUP_GROUPS.map((groupName) => {
+      return groupsMap.get(groupName) || { name: groupName, standings: [] }
+    })
+
+    return {
+      tournamentName: 'WORLD CUP 2026',
+      subtitle: 'Panel Operativo',
+      heroDescription: 'Vista consolidada de partidos y grupos para un seguimiento preciso y en tiempo real del campeonato.',
+      phase: context.phase,
+      matchesPlayed: context.matchesPlayed,
+      totalGoals: context.totalGoals,
+      goalsPerMatch: context.goalsPerMatch,
+      worldCupStartIso: context.worldCupStartIso,
+      daysToStart: context.daysToStart,
+      daysToFinal: context.daysToFinal,
+      matches: selectedMatches,
+      groups,
+    }
+  } catch (error) {
+    console.error('[HomePage] failed to load API dashboard data:', error)
+    return {
+      tournamentName: 'WORLD CUP 2026',
+      subtitle: 'Sistema Offline',
+      heroDescription: 'No se procesaron los datos. Reintenta mas tarde.',
+      phase: 'Sin datos',
+      matchesPlayed: 0,
+      totalGoals: 0,
+      goalsPerMatch: '0.00',
+      worldCupStartIso: new Date('2026-06-11T00:00:00.000Z').toISOString(),
+      daysToStart: 0,
+      daysToFinal: 0,
+      matches: [],
+      groups: [],
+    }
+  }
 }
 
-export default function HomePage() {
-  return (
-    <main className="relative min-h-screen w-full">
-      <div className="mx-auto max-w-[1320px] space-y-10 px-4 py-8 sm:px-6 sm:py-10">
-        <Suspense
-          fallback={
-            <div className="border-y border-white/10 bg-gradient-to-br from-[#0f1f31] via-[#102943] to-[#132033] p-6 sm:p-10">
-              <div className="mb-3 h-4 w-56 animate-pulse rounded bg-neutral-800" />
-              <div className="mb-7 h-10 w-[70%] animate-pulse rounded bg-neutral-800" />
-              <div className="grid grid-cols-2 gap-5 sm:grid-cols-4 sm:gap-6">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <div key={i} className="h-[140px] animate-pulse rounded-2xl bg-black/30" />
-                ))}
-              </div>
-              <div className="mt-6 h-[190px] animate-pulse rounded-2xl bg-black/30" />
-            </div>
-          }
-        >
-          <HeroSection />
-        </Suspense>
+export default async function HomePage() {
+  const dashboardData = await getHomeDashboardDataFromApi()
+  const hasMatches = dashboardData.matches.length > 0
+  const hasGroups = dashboardData.groups.some((group) => group.standings.length > 0)
+  const showStartCountdown = dashboardData.daysToStart > 0
+  const showPhase = dashboardData.phase !== 'Sin datos'
+  const showFinalDays = dashboardData.daysToFinal > 0
+  const showMatchesPlayed = dashboardData.matchesPlayed > 0
+  const showGoals = dashboardData.totalGoals > 0
 
-        <Suspense
-          fallback={
-            <div className="border-y border-white/10 bg-gradient-to-br from-[#121d2f] via-[#14243a] to-[#1a2a41] p-6 sm:p-9">
-              <div className="mb-7 h-4 w-32 animate-pulse rounded bg-neutral-800" />
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-7">
-                {Array.from({ length: 3 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-[236px] rounded-2xl bg-black/30 animate-pulse"
-                  />
+  return (
+    <div className="mx-auto flex w-full max-w-7xl flex-col gap-10 px-4 pb-16 pt-8 sm:px-6 lg:px-8">
+      
+      {/* Hero Header Estructurado */}
+      <header className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-6 border-b border-zinc-800/80">
+        <div className="max-w-3xl space-y-3">
+          <div className="flex items-center gap-2">
+            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <p className="text-xs font-semibold tracking-[0.15em] text-blue-500 uppercase">{dashboardData.subtitle}</p>
+          </div>
+          <h1 className="text-4xl font-extrabold tracking-tight text-white sm:text-5xl md:text-6xl">
+            {dashboardData.tournamentName}
+          </h1>
+          <p className="text-base text-zinc-400 mt-2 max-w-2xl leading-relaxed">
+            {dashboardData.heroDescription}
+          </p>
+        </div>
+        <div className="flex gap-3">
+            {hasMatches && (
+              <Link
+                href="/matches"
+                className="inline-flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-white px-5 py-2.5 text-sm font-bold text-zinc-950 transition-colors"
+                data-testid="home-hero-cta-matches"
+              >
+                Ver Partidos
+              </Link>
+            )}
+            {hasGroups && (
+              <Link
+                href="/groups"
+                className="inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-zinc-100 transition-colors"
+                data-testid="home-hero-cta-groups"
+              >
+                Tribuna de Grupos
+              </Link>
+            )}
+          </div>
+      </header>
+
+      {/* Grid de KPIs Metrics - Linea minimalista */}
+      {(showStartCountdown || showPhase || showFinalDays || showMatchesPlayed || showGoals) && (
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6" data-testid="home-hero-metrics">
+          {showPhase && <KpiCard label="Fase Actual" value={dashboardData.phase} icon={<Trophy className="h-5 w-5" />} accentClass="bg-red-500" />}
+          {showMatchesPlayed && <KpiCard label="Partidos Jugados" value={String(dashboardData.matchesPlayed)} icon={<Activity className="h-5 w-5" />} accentClass="bg-blue-500" />}
+          {showGoals && <KpiCard label="Goles Totales" value={String(dashboardData.totalGoals)} icon={<Target className="h-5 w-5" />} accentClass="bg-green-500" />}
+          {showFinalDays && <KpiCard label="Dias a la Final" value={String(dashboardData.daysToFinal)} icon={<CalendarDays className="h-5 w-5" />} accentClass="bg-zinc-400" />}
+        </section>
+      )}
+
+      {/* Main Dashboard Blocks */}
+      {(hasMatches || hasGroups) && (
+        <section
+          className={`grid grid-cols-1 gap-8 ${hasMatches && hasGroups ? 'lg:grid-cols-12' : ''}`}
+          data-testid="home-dashboard-grid"
+        >
+          {hasMatches && (
+            <div className="lg:col-span-7 flex flex-col gap-5 rounded-2xl border border-zinc-800/60 bg-zinc-950 p-5 shadow-sm md:p-7">
+              <div className="flex items-center justify-between border-b border-zinc-800/80 pb-4">
+                <div>
+                  <h2 className="text-xl font-bold text-zinc-50 flex items-center gap-2">
+                    Agenda de Competencia
+                  </h2>
+                  <p className="mt-1 text-sm text-zinc-500">Últimos y próximos encuentros oficiales.</p>
+                </div>
+                {dashboardData.matchesPlayed > 0 && (
+                  <div className="flex flex-col items-end">
+                    <span className="text-[10px] uppercase tracking-wider text-zinc-500">Goles / Partido</span>
+                    <span className="text-lg font-bold text-zinc-100">{dashboardData.goalsPerMatch}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="flex flex-col gap-3">
+                {dashboardData.matches.map((match) => (
+                  <MatchCard key={match.id} match={match} />
                 ))}
               </div>
             </div>
-          }
-        >
-          <GroupsSection />
-        </Suspense>
-      </div>
-    </main>
+          )}
+
+          {hasGroups && (
+            <div className="lg:col-span-5 flex flex-col gap-5 rounded-2xl border border-zinc-800/60 bg-zinc-950 p-5 shadow-sm md:p-7">
+              <div className="border-b border-zinc-800/80 pb-4">
+                <h2 className="text-xl font-bold text-zinc-50">Clasificación</h2>      
+                <p className="mt-1 text-sm text-zinc-500">Tabla de posiciones en tiempo real.</p>  
+              </div>
+              <GroupsCarousel groups={dashboardData.groups} />
+            </div>
+          )}
+        </section>
+      )}
+    </div>
   )
 }

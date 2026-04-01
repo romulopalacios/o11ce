@@ -1,82 +1,101 @@
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import type { StandingGroup } from "@/server/services/football/types";
+import type { StandingGroup, StandingTableRow } from "@/server/services/football/types";
 
 interface StandingsTableProps {
   standings: StandingGroup[];
 }
 
-export default function StandingsTable({ standings }: StandingsTableProps) {
+export default function StandingsTable({ standings }: StandingsTableProps) {    
   return (
-    <div className="space-y-8 stagger">
-      {standings.map((group, groupIndex) => (
-        <section key={`${group.group ?? "GROUP"}-${groupIndex}`}>
-          <p className="mb-3 font-mono text-[10px] uppercase tracking-[.12em] text-neutral-400">
-            {group.group ?? `Grupo ${groupIndex + 1}`}
-          </p>
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+      {standings.map((group, groupIndex) => {
+        const groupName = group.group ?? `Grupo ${groupIndex + 1}`;
+        // Normalize group name string by removing underscore when it comes from API
+        const displayGroup = groupName.replace("_", " ");
 
-          <div className="rounded-3xl border border-[var(--b2)]/55 bg-[linear-gradient(125deg,rgba(58,168,255,.11),rgba(255,77,66,.08)_46%,rgba(9,16,31,.74))] p-3 sm:p-4">
-            <div className="grid grid-cols-[24px_1fr_36px_42px_44px] gap-[6px] px-3 py-2.5 mb-2">
-              {["", "equipo", "PJ", "DG", "PTS"].map((h, i) => (
-                <span
-                  key={i}
-                  className={cn(
-                    "font-mono text-label text-neutral-500 tracking-[.1em] uppercase",
-                    i > 1 && "text-center",
-                  )}
-                >
-                  {h}
-                </span>
-              ))}
+        return (
+          <section 
+            key={`${groupName}-${groupIndex}`}
+            className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40"
+          >
+            <header className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/80 px-5 py-4">
+              <h3 className="font-display text-sm font-bold uppercase tracking-wider text-zinc-100">
+                {displayGroup}
+              </h3>
+            </header>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-800/60 bg-zinc-900/20 text-xs font-semibold uppercase tracking-wider text-zinc-500">
+                    <th className="px-5 py-3 font-medium w-8 text-center">#</th>
+                    <th className="px-2 py-3 font-medium">Equipo</th>
+                    <th className="px-2 py-3 text-center w-12 font-medium" title="Partidos Jugados">PJ</th>
+                    <th className="px-2 py-3 text-center w-12 font-medium" title="Diferencia de Goles">DG</th>
+                    <th className="px-5 py-3 text-right w-16 font-medium" title="Puntos">Pts</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-zinc-800/40">
+                  {group.table?.map((entry: StandingTableRow, i: number) => {
+                    const qualifies = i < 2; // Assuming top 2 qualify
+
+                    return (
+                      <tr
+                        key={entry.team.id}
+                        className={cn(
+                          "group/row relative transition-colors hover:bg-zinc-800/30",
+                          qualifies ? "text-zinc-100" : "text-zinc-400"
+                        )}
+                      >
+                        <td className="px-5 py-3 text-center relative">
+                          {qualifies && (
+                            <div className="absolute left-0 top-0 h-full w-[3px] bg-blue-500" />
+                          )}
+                          <span className={cn(
+                            "flex h-6 w-6 items-center justify-center rounded-md text-xs font-bold mx-auto",
+                            qualifies ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "text-zinc-500"
+                          )}>
+                            {i + 1}
+                          </span>
+                        </td>
+                        
+                        <td className="px-2 py-3">
+                          <Link
+                            href={`/teams/${entry.team.id}`}
+                            className={cn(
+                              "block truncate font-medium hover:text-blue-400 transition-colors",
+                              qualifies ? "text-zinc-100" : "text-zinc-300"
+                            )}
+                          >
+                            {entry.team.name ?? "—"}
+                          </Link>
+                        </td>
+
+                        <td className="px-2 py-3 text-center text-zinc-500">
+                          {entry.playedGames}
+                        </td>
+                        
+                        <td className="px-2 py-3 text-center text-zinc-500">
+                          {entry.goalDifference > 0 ? `+${entry.goalDifference}` : entry.goalDifference}
+                        </td>
+
+                        <td className={cn(
+                          "px-5 py-3 text-right font-bold text-base",
+                          qualifies ? "text-blue-400" : "text-zinc-300"
+                        )}>
+                          {entry.points}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
-
-            {group.table.map((entry, i) => {
-              const qualifies = i < 2;
-
-              return (
-                <div
-                  key={entry.team.id}
-                  className="relative mb-2 grid grid-cols-[24px_1fr_36px_42px_44px] items-center gap-[6px] rounded-2xl border border-[var(--b1)]/35 bg-[var(--brand-navy)]/55 px-3 py-2.5 transition-colors last:mb-0 hover:border-[var(--b2)]/70 hover:bg-[var(--brand-navy)]/75"
-                >
-                  {qualifies && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-[2px] h-5 bg-win rounded-r-[2px]" />
-                  )}
-
-                  <span className={cn("font-display text-[17px] leading-none text-neutral-500", qualifies ? "opacity-100" : "opacity-60")}>
-                    {i + 1}
-                  </span>
-
-                  <Link
-                    href={`/teams/${entry.team.id}`}
-                    className={cn(
-                      "font-sans text-body truncate text-neutral-100 font-medium",
-                      "hover:text-accent transition-colors duration-100",
-                      !qualifies && "text-neutral-300",
-                    )}
-                  >
-                    {entry.team.name ?? "—"}
-                  </Link>
-
-                  <span className="font-mono text-[11px] text-neutral-400 text-center">{entry.playedGames}</span>
-                  <span className="font-mono text-[11px] text-neutral-400 text-center">
-                    {entry.goalDifference > 0 ? "+" : ""}
-                    {entry.goalDifference}
-                  </span>
-
-                  <span
-                    className={cn(
-                      "text-center leading-none",
-                      qualifies ? "font-display text-[18px] text-accent" : "font-mono text-[11px] text-text2",
-                    )}
-                  >
-                    {entry.points}
-                  </span>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-      ))}
+          </section>
+        );
+      })}
     </div>
   );
 }
+

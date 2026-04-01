@@ -37,11 +37,31 @@ export async function getById(teamId: number): Promise<TeamDetailResponse | null
       TTL.TEAM_PROFILE,
     );
   } catch (error) {
-    if (error instanceof FootballAPIError && error.status === 400) {
+    if (error instanceof FootballAPIError && (error.status === 400 || error.status === 404)) {
       throw new TRPCError({
         code: "NOT_FOUND",
         message: `Team ${teamId} not found`,
       });
+    }
+    
+    // Free Tier limits sometimes return 403 for specific team endpoints.
+    // Fallback to getting it from the competition's team list, but without full squad.
+    if (error instanceof FootballAPIError && error.status === 403) {
+       console.warn(`[TeamService] 403 Forbidden for /teams/${teamId}. Falling back to team array filtering.`);
+       const allTeams = await getAll();
+       const matchedTeam = allTeams.find(t => t.id === teamId);
+       
+       if (!matchedTeam) {
+         throw new TRPCError({
+           code: "NOT_FOUND",
+           message: `Team ${teamId} not found in fallback list`,
+         });
+       }
+
+       return {
+         ...matchedTeam,
+         squad: [], // Free tier fallback doesn't map squad
+       } as unknown as TeamDetailResponse;
     }
 
     throw error;

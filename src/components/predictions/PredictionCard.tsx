@@ -27,12 +27,12 @@ export default function PredictionCard({ prediction, animationDelayMs = 0 }: Pre
 
   return (
     <motion.article
-      className="mb-[8px] rounded-2xl border border-[var(--b2)]/55 bg-[linear-gradient(126deg,rgba(58,168,255,.11),rgba(255,77,66,.08)_46%,rgba(8,16,31,.74))] px-5 py-4 transition-colors duration-200 hover:border-[var(--brand-cyan)]/75 animate-fade-up [animation-delay:var(--prediction-delay)]"
+      className="mb-[8px] rounded-2xl border border-[var(--b2)]/20 bg-[linear-gradient(126deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.5))] px-4 py-4 transition-colors duration-200 hover:border-[var(--brand-cyan)]/45 animate-fade-up [animation-delay:var(--prediction-delay)] sm:px-5"
       style={animationStyle}
       whileHover={{ y: -2, scale: 1.01 }}
       transition={{ duration: 0.16, ease: "easeOut" }}
     >
-      <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 mb-5">
+      <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
         <span className="truncate font-sans text-[13px] font-medium text-[var(--text)]">{prediction.homeTeam.name}</span>
         <div className="flex flex-col items-center gap-[2px]">
           <span className="font-mono text-[10px] tracking-[.12em] uppercase text-[var(--text3)]">vs</span>
@@ -47,10 +47,10 @@ export default function PredictionCard({ prediction, animationDelayMs = 0 }: Pre
         </div>
       ) : (
         <>
-          <div className="mb-3 grid grid-cols-[1fr_52px_1fr] items-end gap-3">
+          <div className="mb-3 grid grid-cols-[minmax(0,1fr)_56px_minmax(0,1fr)] items-end gap-3">
             <div className="flex flex-col gap-[5px]">
               <span className="font-display text-[24px] text-ac leading-none">{prediction.probabilities.homeWin}%</span>
-              <div className="relative h-[5px] bg-white/10 rounded-full overflow-hidden">
+              <div className="relative h-[5px] overflow-hidden rounded-full bg-[var(--b1)]/45">
                 <motion.div
                   className="absolute left-0 top-0 h-full bg-ac rounded-full"
                   initial={{ width: 0 }}
@@ -63,7 +63,7 @@ export default function PredictionCard({ prediction, animationDelayMs = 0 }: Pre
 
             <div className="flex flex-col items-center gap-[5px]">
               <span className="font-mono text-[11px] text-[var(--text2)]">{prediction.probabilities.draw}%</span>
-              <div className="relative w-[40px] h-[5px] bg-white/10 rounded-full overflow-hidden">
+              <div className="relative h-[5px] w-[42px] overflow-hidden rounded-full bg-[var(--b1)]/45">
                 <motion.div
                   className="absolute left-0 top-0 h-full bg-t3 rounded-full"
                   initial={{ width: 0 }}
@@ -83,7 +83,7 @@ export default function PredictionCard({ prediction, animationDelayMs = 0 }: Pre
               >
                 {prediction.probabilities.awayWin}%
               </span>
-              <div className="relative h-[5px] bg-white/10 rounded-full overflow-hidden w-full">
+              <div className="relative h-[5px] w-full overflow-hidden rounded-full bg-[var(--b1)]/45">
                 <motion.div
                   className="absolute left-0 top-0 h-full rounded-full"
                   style={{

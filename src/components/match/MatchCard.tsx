@@ -1,151 +1,156 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Link from "next/link";
-import type { CSSProperties } from "react";
-
-import { LiveBadge } from "@/components/match/LiveBadge";
 import { cn } from "@/lib/utils";
+import type { MatchCardScore, MatchCardStatus } from "@/lib/mock/tournamentDashboard";
 import type { FootballMatch } from "@/server/services/football/types";
 
 interface MatchCardProps {
-  match: FootballMatch;
+  match?: FootballMatch;
+  id?: number;
+  homeTeam?: string;
+  awayTeam?: string;
+  status?: MatchCardStatus;
+  score?: MatchCardScore | null;
+  kickoffAt?: string;
+  minute?: number;
+  group?: string;
+  href?: string;
   animationDelayMs?: number;
 }
 
-function fmtTime(utcDate: string) {
-  return new Intl.DateTimeFormat("es", {
+interface NormalizedMatchCardData {
+  id: number;
+  homeTeam: string;
+  awayTeam: string;
+  status: MatchCardStatus;
+  score: MatchCardScore | null;
+  kickoffAt: string;
+  minute?: number;
+  group?: string;
+  href: string;
+}
+
+function normalizeMatchData(props: MatchCardProps): NormalizedMatchCardData {
+  if (props.match) {
+    let status: MatchCardStatus = "scheduled";
+    if (props.match.status === "IN_PLAY" || props.match.status === "PAUSED") {
+      status = "live";
+    } else if (props.match.status === "FINISHED") {
+      status = "finished";
+    }
+
+    let score: MatchCardScore | null = null;
+    if (props.match.score?.fullTime?.home !== null && props.match.score?.fullTime?.away !== null) {
+      score = {
+        home: props.match.score.fullTime.home as number,
+        away: props.match.score.fullTime.away as number,
+      };
+    }
+
+    return {
+      id: props.match.id,
+      homeTeam: props.match.homeTeam.name ?? "TBD",
+      awayTeam: props.match.awayTeam.name ?? "TBD",
+      status,
+      score,
+      kickoffAt: props.match.utcDate,
+      minute: props.match.minute ?? undefined,
+      group: props.match.group ?? props.match.stage ?? undefined,
+      href: `/matches/${props.match.id}`,
+    };
+  }
+
+  return {
+    id: props.id ?? 0,
+    homeTeam: props.homeTeam ?? "TBD",
+    awayTeam: props.awayTeam ?? "TBD",
+    status: props.status ?? "scheduled",
+    score: props.score ?? null,
+    kickoffAt: props.kickoffAt ?? new Date().toISOString(),
+    minute: props.minute,
+    group: props.group,
+    href: props.href ?? `/matches/${props.id ?? 0}`,
+  };
+}
+
+function formatKickoff(isoDate: string): string {
+  const date = new Date(isoDate);
+  return new Intl.DateTimeFormat("es-ES", {
+    weekday: "short",
     day: "numeric",
     month: "short",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date(utcDate));
+  }).format(date);
 }
 
-function fmtStage(stage: string) {
-  const m: Record<string, string> = {
-    GROUP_STAGE: "Grupos",
-    ROUND_OF_16: "Octavos",
-    QUARTER_FINALS: "Cuartos",
-    SEMI_FINALS: "Semis",
-    THIRD_PLACE: "3er lugar",
-    FINAL: "Final",
-  };
-  return m[stage] ?? stage;
-}
+export default function MatchCard(props: MatchCardProps) {
+  const data = normalizeMatchData(props);
 
-export default function MatchCard({ match, animationDelayMs = 0 }: MatchCardProps) {
-  const homeScore = match.score.fullTime.home;
-  const awayScore = match.score.fullTime.away;
-  const homeWon = match.status === "FINISHED" && (homeScore ?? 0) > (awayScore ?? 0);
-  const awayWon = match.status === "FINISHED" && (awayScore ?? 0) > (homeScore ?? 0);
+  const statusLabel =
+    data.status === "live"
+      ? "En vivo"
+      : data.status === "finished"
+        ? "Finalizado"
+        : "Programado";
 
-  const style = {
-    "--card-delay": `${animationDelayMs}ms`,
-  } as CSSProperties;
+  const isLive = data.status === "live";
 
   return (
-    <Link href={`/matches/${match.id}`}>
-      <motion.article
-        className={cn(
-          "panel-compact",
-          "cursor-pointer rounded-2xl border border-[var(--b2)]/60 px-4 py-4",
-          "bg-[linear-gradient(125deg,rgba(58,168,255,.12),rgba(255,77,66,.08)_42%,rgba(10,18,34,.74))]",
-          "transition-all duration-200 group",
-          "hover:border-[var(--brand-cyan)]/80",
-          match.status === "IN_PLAY" && "border-live/70 shadow-[0_0_0_1px_rgba(255,45,85,0.12)]",
-          "animate-fade-up [animation-delay:var(--card-delay)]",
-        )}
-        style={style}
-        whileHover={{ y: -2, scale: 1.01 }}
-        transition={{ duration: 0.16, ease: "easeOut" }}
-      >
-        {/* Linea superior */}
-        <div className="flex items-center justify-between mb-3">
-            <span className="truncate pr-3 font-mono text-[10px] tracking-[.11em] uppercase text-[var(--text2)]">
-            {match.stage ? fmtStage(match.stage) : ""}
-            {match.group ? ` · ${match.group}` : ""}
-          </span>
-          {match.status === "IN_PLAY" ? (
-            <LiveBadge minute={match.minute} />
-          ) : match.status === "FINISHED" ? (
-            <span className="font-mono text-[9px] text-neutral-500 tracking-[.12em] uppercase">FIN</span>
+    <Link
+      href={data.href}
+      data-testid={`match-card-${data.id}`}
+      className={cn(
+        "group relative block overflow-hidden rounded-xl border p-4 transition-all duration-200",
+        isLive ? "bg-zinc-900 border-zinc-700 hover:border-emerald-500/50" : "bg-zinc-900/50 border-zinc-800/80 hover:bg-zinc-900 hover:border-zinc-700"
+      )}
+      aria-label={`Abrir partido ${data.homeTeam} vs ${data.awayTeam}`}
+    >
+      {isLive && (
+        <div className="absolute left-0 top-0 h-full w-1 bg-emerald-500 rounded-l-xl"></div>
+      )}
+      <article className="flex flex-col gap-3">
+        <div className="flex items-center justify-between border-b border-zinc-800/60 pb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] uppercase tracking-widest text-zinc-500 font-semibold">{data.group ?? "Fase eliminatoria"}</span>
+          </div>
+
+          {isLive ? (
+            <span
+              data-testid={`match-live-badge-${data.id}`}
+              className="inline-flex items-center gap-2 rounded px-2 py-0.5 text-[10px] font-bold tracking-widest text-emerald-400 bg-emerald-400/10 border border-emerald-400/20"
+            >
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 live-pulse shrink-0" />
+              {data.minute ? `${data.minute}'` : "LIVE"}
+            </span>
           ) : (
-            <span className="font-mono text-[10px] text-neutral-400 tracking-[.08em]">{fmtTime(match.utcDate)}</span>
+            <span className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              {data.status === "finished" ? statusLabel : formatKickoff(data.kickoffAt)}
+            </span>
           )}
         </div>
 
-        {/* Equipos y score */}
-        <div className="grid grid-cols-[1fr_82px_1fr] items-center gap-2.5">
-          {/* Local */}
-          <div className="flex items-center gap-2.5 min-w-0">
-            <img
-              src={match.homeTeam.crest ?? "/placeholder-crest.svg"}
-              alt=""
-              className="h-[26px] w-[26px] rounded-[7px] shrink-0 border border-white/10 bg-s3/70 p-[2px] object-contain"
-              loading="lazy"
-            />
-            <span
-              className={cn(
-                "text-[13px] truncate max-w-[102px] sm:max-w-[130px]",
-                homeWon && "text-t1 font-semibold",
-                awayWon && "text-neutral-500",
-                match.status === "SCHEDULED" && "text-neutral-200",
-                !homeWon && !awayWon && match.status === "FINISHED" && "text-t1",
-              )}
-            >
-              {match.homeTeam.name ?? "Por confirmar"}
-            </span>
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
+          <div className="min-w-0 text-right">
+            <p className="truncate text-sm font-bold text-zinc-100">{data.homeTeam}</p>
           </div>
 
-          {/* Score */}
-          {match.status === "SCHEDULED" ? (
-            <div className="flex flex-col items-center gap-[2px]">
-              <span className="font-display text-[18px] text-t1 leading-none">
-                {new Intl.DateTimeFormat("es", {
-                  day: "numeric",
-                }).format(new Date(match.utcDate))}
-              </span>
-              <span className="font-mono text-label text-neutral-500 uppercase tracking-[.08em]">
-                {new Intl.DateTimeFormat("es", {
-                  month: "short",
-                }).format(new Date(match.utcDate))}
-              </span>
-            </div>
-          ) : (
-            <div className="flex items-center justify-center gap-[4px]">
-              <span className={cn("font-display text-[28px] leading-none", homeWon ? "text-t1" : "text-t3")}>
-                {homeScore ?? 0}
-              </span>
-              <span className="font-mono text-[10px] text-neutral-600">-</span>
-              <span className={cn("font-display text-[28px] leading-none", awayWon ? "text-t1" : "text-t3")}>
-                {awayScore ?? 0}
-              </span>
-            </div>
-          )}
+          <div
+            data-testid={`match-card-score-${data.id}`}
+            className={cn(
+              "flex min-w-[64px] items-center justify-center rounded-lg px-3 py-1.5 font-display text-xl leading-none font-bold",
+              isLive ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-zinc-950 text-zinc-100 border border-zinc-800"
+            )}
+          >
+            {data.score ? `${data.score.home} - ${data.score.away}` : "vs"}
+          </div>
 
-          {/* Visitante */}
-          <div className="flex items-center gap-2.5 min-w-0 flex-row-reverse text-right">
-            <img
-              src={match.awayTeam.crest ?? "/placeholder-crest.svg"}
-              alt=""
-              className="h-[26px] w-[26px] rounded-[7px] shrink-0 border border-white/10 bg-s3/70 p-[2px] object-contain"
-              loading="lazy"
-            />
-            <span
-              className={cn(
-                "text-[13px] truncate max-w-[102px] sm:max-w-[130px]",
-                awayWon && "text-t1 font-semibold",
-                homeWon && "text-neutral-500",
-                match.status === "SCHEDULED" && "text-neutral-200",
-                !homeWon && !awayWon && match.status === "FINISHED" && "text-t1",
-              )}
-            >
-              {match.awayTeam.name ?? "Por confirmar"}
-            </span>
+          <div className="min-w-0 text-left">
+            <p className="truncate text-sm font-bold text-zinc-100">{data.awayTeam}</p>
           </div>
         </div>
-      </motion.article>
+      </article>
     </Link>
   );
 }

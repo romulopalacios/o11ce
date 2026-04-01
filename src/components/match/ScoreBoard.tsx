@@ -48,13 +48,13 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
   return (
     <div
       className={cn(
-        "overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04]",
+        "overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950 shadow-sm",
         hasTimeline && "rounded-b-none",
       )}
     >
       {/* Eyebrow */}
       <div className="px-6 pt-5 pb-0">
-        <span className="font-mono text-label tracking-[.14em] uppercase text-[var(--text3)]">
+        <span className="font-mono text-label tracking-[.14em] uppercase text-zinc-500">
           {[match.stage && fmtStage(match.stage), match.group].filter(Boolean).join(" · ")}
         </span>
       </div>
@@ -65,20 +65,20 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
         <Link
           href={`/teams/${match.homeTeam.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col items-center gap-2 group"
+          className="group flex flex-col items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
         >
-          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-[14px] border border-b2 bg-s3 overflow-hidden flex items-center justify-center relative">
-            <div className="absolute inset-0 rounded-[14px] bg-gradient-to-b from-ac/15 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-[14px] border border bg-zinc-900 border-zinc-800 shadow-sm overflow-hidden flex items-center justify-center relative">
+            <div className="absolute inset-0 rounded-[14px] bg-gradient-to-b from-zinc-800 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             <img
               src={match.homeTeam.crest ?? "/placeholder-crest.svg"}
               alt={match.homeTeam.name ?? ""}
               className="w-full h-full object-contain p-2"
             />
           </div>
-          <span className="text-center font-sans text-body text-[12px] font-semibold uppercase tracking-[.03em] text-[var(--text)] transition-colors group-hover:text-ac">
+          <span className="text-center font-sans text-body text-[12px] font-semibold uppercase tracking-[.03em] text-zinc-50 transition-colors group-hover:text-zinc-300">
             {match.homeTeam.name ?? "—"}
           </span>
-          <span className="font-mono text-label tracking-[.12em] text-[var(--text3)]">
+          <span className="font-mono text-label tracking-[.12em] text-zinc-500">
             {match.homeTeam.tla ?? "—"}
           </span>
         </Link>
@@ -91,17 +91,17 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
                 className={cn(
                   "font-display leading-none tracking-[.02em]",
                   "text-[52px] sm:text-[64px]",
-                  homeWon ? "text-[var(--text)]" : "text-[var(--text3)]",
+                  homeWon ? "text-zinc-50" : "text-zinc-500",
                 )}
               >
                 {match.score.fullTime.home ?? 0}
               </span>
-              <span className="mx-2 font-display text-[28px] text-[var(--b2)]">–</span>
+              <span className="mx-2 font-display text-[28px] text-zinc-700">–</span>
               <span
                 className={cn(
                   "font-display leading-none tracking-[.02em]",
                   "text-[52px] sm:text-[64px]",
-                  awayWon ? "text-[var(--text)]" : "text-[var(--text3)]",
+                  awayWon ? "text-zinc-50" : "text-zinc-500",
                 )}
               >
                 {match.score.fullTime.away ?? 0}
@@ -109,13 +109,13 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
             </div>
           ) : (
             <div className="flex flex-col items-center gap-2">
-              <span className="font-display text-[52px] leading-none tracking-[.04em] text-[var(--text3)] sm:text-[64px]">
+              <span className="font-display text-[52px] leading-none tracking-[.04em] text-zinc-500 sm:text-[64px]">
                 VS
               </span>
             </div>
           )}
           {showScore && match.score.halfTime?.home != null ? (
-            <span className="font-mono text-label text-[var(--text3)]">
+            <span className="font-mono text-label text-zinc-500">
               1T &nbsp;{match.score.halfTime.home}–{match.score.halfTime.away ?? 0}
             </span>
           ) : null}
@@ -125,35 +125,35 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
         <Link
           href={`/teams/${match.awayTeam.id}`}
           onClick={(e) => e.stopPropagation()}
-          className="flex flex-col items-center gap-2 group"
+          className="group flex flex-col items-center gap-2 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300"
         >
-          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-[14px] border border-b2 bg-s3 overflow-hidden flex items-center justify-center relative">
-            <div className="absolute inset-0 rounded-[14px] bg-gradient-to-b from-ac/15 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
+          <div className="w-[56px] h-[56px] sm:w-[64px] sm:h-[64px] rounded-[14px] border border bg-zinc-900 border-zinc-800 shadow-sm overflow-hidden flex items-center justify-center relative">
+            <div className="absolute inset-0 rounded-[14px] bg-gradient-to-b from-zinc-800 to-transparent opacity-0 transition-opacity group-hover:opacity-100" />
             <img
               src={match.awayTeam.crest ?? "/placeholder-crest.svg"}
               alt={match.awayTeam.name ?? ""}
               className="w-full h-full object-contain p-2"
             />
           </div>
-          <span className="text-center font-sans text-body text-[12px] font-semibold uppercase tracking-[.03em] text-[var(--text)] transition-colors group-hover:text-ac">
+          <span className="text-center font-sans text-body text-[12px] font-semibold uppercase tracking-[.03em] text-zinc-50 transition-colors group-hover:text-zinc-300">
             {match.awayTeam.name ?? "—"}
           </span>
-          <span className="font-mono text-label tracking-[.12em] text-[var(--text3)]">
+          <span className="font-mono text-label tracking-[.12em] text-zinc-500">
             {match.awayTeam.tla ?? "—"}
           </span>
         </Link>
       </div>
 
       {/* Footer */}
-      <div className="flex justify-center border-t border-white/10 px-6 py-3">
+      <div className="flex justify-center border-t border-zinc-800 px-6 py-3">
         {match.status === "IN_PLAY" ? (
           <LiveBadge minute={match.minute} />
         ) : match.status === "FINISHED" ? (
-          <span className="font-mono text-label tracking-[.1em] uppercase text-[var(--text3)]">
+          <span className="font-mono text-label tracking-[.1em] uppercase text-zinc-500">
             Partido finalizado
           </span>
         ) : (
-          <span className="font-mono text-label text-[var(--text2)]">
+          <span className="font-mono text-label text-zinc-400">
             {fmtTime(match.utcDate)}
           </span>
         )}
@@ -161,3 +161,4 @@ export default function ScoreBoard({ match, hasTimeline = false }: ScoreBoardPro
     </div>
   );
 }
+

@@ -82,7 +82,7 @@ export default async function MatchDetailPage({ params }: MatchDetailPageProps) 
       <PageHero title="DETALLE DEL PARTIDO" subtitle="seguimiento del partido" meta="Mundial 2026" />
 
       <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
           <LiveMatchClient initialMatch={match} matchId={parsedMatchId} prediction={prediction} />
         </section>
       </PageWrapper>

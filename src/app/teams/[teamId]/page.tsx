@@ -96,19 +96,19 @@ export default async function TeamPage({ params }: TeamPageProps) {
       <PageHero title="PERFIL DEL EQUIPO" subtitle="detalle de selección" meta="Mundial 2026" />
 
       <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
+        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
           <TeamProfile team={team} />
 
-          <div className="mt-5">
+          <div>
             <Link
               href={`/compare?a=${parsedTeamId}`}
-              className="font-mono text-[11px] tracking-[.08em] text-[var(--text2)] transition-colors hover:text-[var(--accent)]"
+              className="rounded-md font-mono text-[11px] tracking-[.08em] text-[var(--text2)] transition-colors hover:text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-cyan)]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--brand-navy)]"
             >
               comparar con otro equipo →
             </Link>
           </div>
 
-          <section className="mt-9 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+          <section className="rounded-2xl border border-[var(--b2)]/55 bg-[var(--brand-navy)]/55 p-4 sm:p-5">
             <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
               partidos en el torneo
             </h2>
@@ -125,7 +125,7 @@ export default async function TeamPage({ params }: TeamPageProps) {
           </section>
 
           {teamGroup ? (
-            <section className="mt-9 rounded-2xl border border-white/10 bg-white/[0.02] p-4 sm:p-5">
+            <section className="rounded-2xl border border-[var(--b2)]/55 bg-[var(--brand-navy)]/55 p-4 sm:p-5">
               <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
                 posicion en el grupo
               </h2>

@@ -6,7 +6,10 @@ export function Card({ className, ...props }: HTMLAttributes<HTMLDivElement>) {
   return (
     <div
       className={cn(
-        "rounded-xl border border-b1 bg-s1 text-t1 shadow-sm",
+        "rounded-2xl border border-[var(--b2)]/14",
+        // Sutil acento tricolor en el fondo
+        "bg-[linear-gradient(120deg,rgba(230,57,70,0.08)_0%,rgba(19,138,54,0.08)_40%,rgba(31,94,255,0.08)_100%),linear-gradient(140deg,rgba(58,168,255,.09),rgba(255,77,66,.06)_46%,rgba(8,16,31,.52))]",
+        "text-t1 shadow-[0_14px_34px_rgba(0,0,0,0.24)]",
         className,
       )}
       {...props}

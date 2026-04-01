@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useCallback } from "react";
-
+import { Users, LayoutGrid } from "lucide-react";
 import { useSearch } from "@/hooks/useSearch";
 import { SearchInput } from "@/components/ui/SearchInput";
 import EmptyState from "@/components/ui/EmptyState";
@@ -23,7 +23,6 @@ function getTeamAliases(team: Team): string[] {
   if ((team.tla ?? "").toUpperCase() === "BRA") {
     aliases.push("brasil", "brazil");
   }
-
   if ((team.tla ?? "").toUpperCase() === "ARG") {
     aliases.push("argentina");
   }
@@ -39,41 +38,51 @@ export function TeamListClient({ teams }: TeamListClientProps) {
   const { query, setQuery, filtered, hasQuery } = useSearch(teams, searchFields);
 
   return (
-    <div>
-      <SearchInput
-        value={query}
-        onChange={setQuery}
-        placeholder="buscar selección o país..."
-        resultCount={hasQuery ? filtered.length : undefined}
-      />
+    <div className="space-y-8">
+      <div className="relative z-10 w-full max-w-md">
+        <SearchInput
+          value={query}
+          onChange={setQuery}
+          placeholder="Buscar selección o país..."
+          resultCount={hasQuery ? filtered.length : undefined}
+          
+        />
+      </div>
 
       {filtered.length === 0 && hasQuery ? (
-        <EmptyState message={`sin resultados para "${query}"`} className="mt-3" />
+        <EmptyState message={`Sin resultados para "${query}"`} className="mt-8 border-dashed border-zinc-800 bg-zinc-900/20" />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 stagger">
-          {filtered.map((team) => (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {filtered.map((team, idx) => (
             <Link
               key={team.id}
               href={`/teams/${team.id}`}
               className={cn(
-                "flex items-center gap-3 px-4 py-3.5",
-                "rounded-2xl border border-[var(--b2)]/55",
-                "bg-[linear-gradient(126deg,rgba(58,168,255,.11),rgba(255,77,66,.08)_46%,rgba(8,16,31,.74))]",
-                "transition-colors duration-150 hover:border-[var(--brand-cyan)]/75",
+                "group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900/40 p-5",
+                "transition-all duration-300 hover:bg-zinc-900 hover:border-emerald-500/50 hover:shadow-[0_0_20px_rgba(16,185,129,0.05)]",
+                "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 focus-visible:ring-offset-2 focus-visible:ring-offset-zinc-950"
               )}
             >
-              <img
-                src={team.crest ?? "/placeholder-crest.svg"}
-                alt={team.name}
-                className="h-9 w-9 shrink-0 rounded-[8px] border border-[var(--b2)]/55"
-                loading="lazy"
-              />
-              <div className="min-w-0">
-                <div className="truncate text-[14px] font-medium text-[var(--text)]">
-                  {team.name}
+              <div className="flex items-start justify-between mb-4">
+                <div className="relative h-14 w-14 shrink-0 rounded-xl border border-zinc-800 bg-zinc-950 p-2 shadow-inner group-hover:border-emerald-500/30 transition-colors">
+                  <img
+                    src={team.crest ?? "/placeholder-crest.svg"}
+                    alt={team.name}
+                    className="h-full w-full object-contain"
+                    loading={idx < 8 ? "eager" : "lazy"}
+                  />
                 </div>
-                <div className="mt-[2px] truncate font-mono text-[10px] tracking-[.08em] uppercase text-[var(--text3)]">
-                  {team.area?.name ?? team.tla}
+                <span className="flex h-6 items-center rounded-full bg-zinc-800/50 px-2.5 text-[10px] font-bold tracking-wider text-zinc-400 group-hover:text-emerald-400 group-hover:bg-emerald-500/10 transition-colors">
+                  {team.tla ?? "TBD"}
+                </span>
+              </div>
+              
+              <div className="mt-auto">
+                <h2 className="truncate font-display text-base font-bold text-zinc-100 group-hover:text-white">
+                  {team.name}
+                </h2>
+                <div className="mt-1 flex items-center gap-1.5 text-xs text-zinc-500">
+                  <span className="truncate">{team.area?.name ?? "Zona desconocida"}</span>
                 </div>
               </div>
             </Link>
@@ -83,3 +92,4 @@ export function TeamListClient({ teams }: TeamListClientProps) {
     </div>
   );
 }
+

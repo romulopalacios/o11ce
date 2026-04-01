@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Archivo_Black, Manrope, IBM_Plex_Mono } from "next/font/google";
-import { Navbar } from "@/components/layout/Navbar";
+import { Inter, Manrope, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import Navbar from "@/components/layout/Navbar";
 
-const archivoBlack = Archivo_Black({
+// Reemplazamos Archivo Black por Inter para un look mas corporativo/sobrio
+const inter = Inter({
   subsets: ["latin"],
-  weight: ["400"],
+  weight: ["400", "500", "600", "700", "800"],
   variable: "--font-display",
   display: "swap",
 });
@@ -17,7 +18,7 @@ const manrope = Manrope({
   display: "swap",
 });
 
-const ibmMono = IBM_Plex_Mono({
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
   variable: "--font-mono",
@@ -26,10 +27,10 @@ const ibmMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "O11CE",
+    default: "O11CE | Mundial 2026",
     template: "%s — O11CE",
   },
-  description: "Sigue el Mundial de Fútbol 2026 en tiempo real",
+  description: "Plataforma analítica y resultados en vivo del Mundial de Fútbol 2026",
 };
 
 export default function RootLayout({
@@ -38,10 +39,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${archivoBlack.variable} ${manrope.variable} ${ibmMono.variable}`}>
-      <body>
+    <html lang="es" className={`${inter.variable} ${manrope.variable} ${jetbrainsMono.variable}`}>
+      <body className="min-h-screen bg-zinc-950 text-zinc-50 font-sans antialiased selection:bg-blue-500/30 selection:text-white">
+        <a href="#main-content" className="skip-link">
+          Saltar al contenido principal
+        </a>
         <Navbar />
-        <main>{children}</main>
+        <main id="main-content" tabIndex={-1}>
+          {children}
+        </main>
       </body>
     </html>
   );

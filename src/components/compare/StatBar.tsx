@@ -16,28 +16,33 @@ export function StatBar({ label, valueA, valueB, higherIsBetter = true }: StatBa
   const widthB = Math.round((Math.abs(valueB) / maxValue) * 100);
 
   const aWins = higherIsBetter ? valueA >= valueB : valueA <= valueB;
+  // Alternar colores de barra y valor destacado
+  const accentColors = ["var(--accent-red)", "var(--accent-green)", "var(--accent-blue)"];
+  const accentA = accentColors[0];
+  const accentB = accentColors[2];
 
   return (
-    <div className="mb-5 rounded-3xl border border-[var(--b2)]/55 bg-[linear-gradient(128deg,rgba(58,168,255,.12),rgba(255,77,66,.08)_46%,rgba(8,16,31,.74))] px-4 py-4 shadow-[0_20px_45px_rgba(0,0,0,0.3)]">
+    <div className="mb-5 rounded-3xl border border-[var(--b2)]/16 bg-[linear-gradient(128deg,rgba(58,168,255,.09),rgba(255,77,66,.06)_46%,rgba(8,16,31,.5))] px-4 py-4 shadow-[0_14px_30px_rgba(0,0,0,0.2)] sm:px-5">
       <div className="mb-3 text-center font-mono text-[10px] tracking-[.16em] uppercase text-[var(--text3)]">
         {label}
       </div>
 
-      <div className="grid grid-cols-[40px_1fr_10px_1fr_40px] items-center gap-2">
+      <div className="grid grid-cols-[44px_minmax(0,1fr)_12px_minmax(0,1fr)_44px] items-center gap-2 sm:grid-cols-[48px_minmax(0,1fr)_12px_minmax(0,1fr)_48px] sm:gap-2.5">
         <span
           className={cn(
             "font-mono text-[12px] font-medium text-right",
-            aWins ? "text-ac" : "text-[var(--text2)]",
+            aWins ? undefined : "text-[var(--text2)]",
           )}
+          style={aWins ? { color: accentA } : {}}
         >
           {valueA}
         </span>
 
-        <div className="relative h-[6px] overflow-hidden rounded-full bg-white/10">
+        <div className="relative h-[6px] overflow-hidden rounded-full" style={{ background: 'rgba(231,76,60,0.10)' }}>
           <motion.div
             className="absolute right-0 top-0 h-full rounded-full"
             style={{
-              background: aWins ? "var(--accent)" : "var(--text3)",
+              background: aWins ? accentA : "var(--text3)",
             }}
             initial={{ width: 0 }}
             animate={{ width: `${widthA}%` }}
@@ -45,13 +50,13 @@ export function StatBar({ label, valueA, valueB, higherIsBetter = true }: StatBa
           />
         </div>
 
-        <div className="h-3 w-[1px] bg-white/15" />
+        <div className="h-3 w-[1px] bg-white/8" />
 
-        <div className="relative h-[6px] overflow-hidden rounded-full bg-white/10">
+        <div className="relative h-[6px] overflow-hidden rounded-full" style={{ background: 'rgba(41,128,185,0.10)' }}>
           <motion.div
             className="absolute left-0 top-0 h-full rounded-full"
             style={{
-              background: !aWins ? "var(--accent)" : "var(--text3)",
+              background: !aWins ? accentB : "var(--text3)",
             }}
             initial={{ width: 0 }}
             animate={{ width: `${widthB}%` }}
@@ -62,8 +67,9 @@ export function StatBar({ label, valueA, valueB, higherIsBetter = true }: StatBa
         <span
           className={cn(
             "font-mono text-[12px] font-medium",
-            !aWins ? "text-ac" : "text-[var(--text2)]",
+            !aWins ? undefined : "text-[var(--text2)]",
           )}
+          style={!aWins ? { color: accentB } : {}}
         >
           {valueB}
         </span>

@@ -1,59 +1,49 @@
-import type { Metadata } from "next";
-import { Suspense } from "react";
+import type { Metadata } from 'next';
+import { footballAPIClient } from '@/server/services/football/client';
+import StandingsTable from '@/components/groups/StandingsTable';
+import { Trophy, Activity } from 'lucide-react';
+import type { StandingGroup } from '@/server/services/football/types';
 
-import StandingsTable from "@/components/groups/StandingsTable";
-import EmptyState from "@/components/ui/EmptyState";
-import { PageHero } from "@/components/ui/PageHero";
-import { PageWrapper } from "@/components/ui/PageWrapper";
-import { Skeleton } from "@/components/ui/Skeleton";
-import * as groupService from "@/server/services/football/groupService";
+export const metadata: Metadata = {
+  title: 'Clasificación - O11CE',
+  description: 'Tabla de posiciones de la liga y grupos activos.',
+};
 
-export const revalidate = 120;
+export const revalidate = 600;
 
-export async function generateMetadata(): Promise<Metadata> {
-  return {
-    title: "Grupos | O11CE",
-    description: "Tabla de posiciones de los grupos del Mundial.",
-  };
-}
+export default async function GroupsPage() {
+  const standings = await footballAPIClient.getStandings();
 
-async function GroupsContent() {
-  const standings = await groupService.getStandings();
+  const groupsObj = standings?.standings?.filter((s: StandingGroup) => s.type === 'TOTAL');
 
   return (
-    <>
-      {standings.length === 0 ? (
-        <EmptyState
-          message="sin datos disponibles"
-          description="Todavia no hay informacion de grupos para mostrar."
-        />
+    <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+      <header className="mb-10">
+        <div className="flex items-center gap-3 mb-2">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+            <Trophy className="h-5 w-5" />
+          </div>
+          <h1 className="text-3xl font-bold tracking-tight text-zinc-100">
+            Clasificación
+          </h1>
+        </div>
+        <p className="text-zinc-500 max-w-2xl text-lg">
+          Tabla de posiciones, puntos y estadísticas de la fase de grupos.
+        </p>
+      </header>
+
+      {groupsObj && groupsObj.length > 0 ? (
+        <StandingsTable standings={groupsObj} />
       ) : (
-        <StandingsTable standings={standings} />
+        <div className="flex min-h-[300px] flex-col items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900/50 py-12 text-center">
+          <Activity className="mx-auto mb-4 h-10 w-10 text-zinc-700" />
+          <h2 className="text-lg font-semibold text-zinc-300">No hay datos disponibles</h2>
+          <p className="mt-1 text-sm text-zinc-500 max-w-xs">
+            Al parecer la competencia aún no arrancó su fase de grupos o los datos no están emitidos.
+          </p>
+        </div>
       )}
-    </>
+    </div>
   );
 }
 
-export default function GroupsPage() {
-  return (
-    <>
-      <PageHero title="GRUPOS" subtitle="12 grupos · 48 selecciones" meta="Mundial 2026" />
-
-      <PageWrapper>
-        <section className="section-shell border border-white/10 bg-white/[0.03] p-5 backdrop-blur-sm sm:p-6">
-          <Suspense
-            fallback={(
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {Array.from({ length: 4 }).map((_, i) => (
-                  <Skeleton key={i} height="h-[220px]" className="mb-0" />
-                ))}
-              </div>
-            )}
-          >
-            <GroupsContent />
-          </Suspense>
-        </section>
-      </PageWrapper>
-    </>
-  );
-}

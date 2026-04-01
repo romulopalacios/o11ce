@@ -23,43 +23,40 @@ export function CountdownBanner() {
   const seconds = Math.floor((diff % 60000) / 1000)
 
   const pad = (n: number) => String(n).padStart(2, '0')
+  const countdownBlocks = [
+    { n: days, l: 'dias' },
+    { n: hours, l: 'horas' },
+    { n: minutes, l: 'minutos' },
+    { n: seconds, l: 'segundos' },
+  ]
 
   return (
-    <div className="relative overflow-hidden px-6 py-7 sm:px-9 sm:py-8">
-      <div className="pointer-events-none absolute -right-20 -top-20 h-52 w-52 rounded-full bg-[var(--brand-cyan)]/18 blur-3xl" />
-      <div className="pointer-events-none absolute -left-20 bottom-0 h-44 w-44 rounded-full bg-[var(--brand-red)]/15 blur-3xl" />
-
-      <p className="relative z-10 mb-2 font-mono text-label tracking-[.16em] uppercase text-[var(--text2)]">
-        partido inaugural · Mexico vs Sudáfrica
+    <div className="rounded-2xl border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-blue-50/40 p-4 shadow-[0_8px_24px_rgb(15,23,42,0.06)] sm:p-5">
+      <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500">
+        Partido inaugural · Mexico vs Sudafrica
       </p>
-      <p className="relative z-10 mb-6 max-w-[48ch] text-[13px] text-[var(--text3)]">
+      <p className="mb-5 max-w-[48ch] text-sm leading-relaxed text-slate-500">
         Cuenta regresiva en tiempo real para el inicio del Mundial en Dallas.
       </p>
 
-      <div className="relative z-10 mb-7 grid grid-cols-2 gap-0 border-y border-[var(--b2)]/45 sm:grid-cols-4">
-        {[
-          { n: days, l: 'días' },
-          { n: hours, l: 'horas' },
-          { n: minutes, l: 'minutos' },
-          { n: seconds, l: 'segundos' },
-        ].map(({ n, l }) => (
-          <div
-            key={l}
-            className="flex flex-col items-center gap-1 bg-[var(--brand-navy)]/35 py-4 backdrop-blur-sm sm:border-l sm:border-[var(--b2)]/45 first:sm:border-l-0"
-          >
-            <span className="font-display text-[38px] leading-none text-[var(--brand-cyan)] sm:text-[52px]">
-              {l === 'días' ? n : pad(n)}
+      <div aria-live="polite" className="mb-5 grid grid-cols-2 gap-2.5 sm:grid-cols-4 sm:gap-3">
+        {countdownBlocks.map(({ n, l }) => (
+          <div key={l} className="rounded-xl border border-slate-200/80 bg-white px-2.5 py-3 text-center shadow-[0_6px_18px_rgb(15,23,42,0.05)]">
+            <span className="animate-fade-in font-display text-[38px] leading-none tracking-tight text-slate-900 sm:text-[46px]">
+              {l === 'dias' ? n : pad(n)}
             </span>
-            <span className="font-mono text-label tracking-[.1em] uppercase text-[var(--text2)]">{l}</span>
+            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">{l}</p>
           </div>
         ))}
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center justify-between gap-3">
-        <span className="font-mono text-label text-[var(--text2)]">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/80 pt-3">
+        <span className="text-xs font-semibold text-slate-500">
           11 jun 2026 · 19:00 UTC · AT&T Stadium · Dallas
         </span>
-        <span className="bg-black/30 px-2.5 py-1 font-mono text-label tracking-[.08em] text-[var(--accent)]">Grupo A</span>
+        <span className="rounded-full bg-blue-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-blue-700">
+          Grupo A
+        </span>
       </div>
     </div>
   )
