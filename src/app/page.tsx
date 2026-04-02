@@ -14,8 +14,7 @@ export const revalidate = 120
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: 'Dashboard',
-    description: 'Panel principal O11CE para gestion de torneos deportivos',
+    title: 'O11CE | Mundial 2026',
   }
 }
 
