@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { Activity } from "lucide-react";
 
 import AccuracyBadge from "@/components/predictions/AccuracyBadge";
-import PredictionCard from "@/components/predictions/PredictionCard";
+import QuinielaClient from "@/components/predictions/QuinielaClient";
 import EmptyState from "@/components/ui/EmptyState";
 import { Skeleton } from "@/components/ui/Skeleton";
 import * as accuracyService from "@/server/services/predictions/accuracyService";
@@ -41,15 +41,7 @@ async function PredictionsContent() {
       {sortedPredictions.length === 0 ? (
         <EmptyState message="sin predicciones disponibles" />
       ) : (
-        <div className="grid gap-3">
-          {sortedPredictions.map((prediction, index) => (
-            <PredictionCard
-              key={prediction.matchId}
-              prediction={prediction}
-              animationDelayMs={index * 60}
-            />
-          ))}
-        </div>
+        <QuinielaClient predictions={sortedPredictions} />
       )}
     </div>
   );

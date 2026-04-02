@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Team {
-  id          Int      @id
+  id          Int       @id
   name        String
   shortName   String
   crest       String
   area        String
-  homeMatches Match[]  @relation("HomeTeam")
-  awayMatches Match[]  @relation("AwayTeam")
+  homeMatches Match[]   @relation("HomeTeam")
+  awayMatches Match[]   @relation("AwayTeam")
   goals       Goal[]
   bookings    Booking[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Match {
@@ -68,9 +68,9 @@ model Booking {
 }
 
 model Substitution {
-  id            Int   @id @default(autoincrement())
+  id            Int    @id @default(autoincrement())
   matchId       Int
-  match         Match @relation(fields: [matchId], references: [id])
+  match         Match  @relation(fields: [matchId], references: [id])
   minute        Int
   teamId        Int
   playerOutName String
@@ -109,4 +109,24 @@ enum CardType {
   YELLOW_CARD
   RED_CARD
   YELLOW_RED_CARD
+}
+
+model QuinielaUser {
+  username    String           @id
+  score       Int              @default(0)
+  predictions UserPrediction[]
+  createdAt   DateTime         @default(now())
+}
+
+model UserPrediction {
+  id        String       @id @default(uuid())
+  username  String
+  user      QuinielaUser @relation(fields: [username], references: [username])
+  matchId   Int
+  predicted String
+  isCorrect Boolean?
+  createdAt DateTime     @default(now())
+
+  @@unique([username, matchId])
+  @@index([matchId])
 }
