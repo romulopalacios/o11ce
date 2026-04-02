@@ -8,21 +8,31 @@ interface StandingsTableProps {
 
 export default function StandingsTable({ standings }: StandingsTableProps) {    
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+    <div className={cn(
+      "grid gap-6",
+      standings.length === 1 ? "grid-cols-1 max-w-2xl mx-auto" : "grid-cols-1 md:grid-cols-2 lg:grid-cols-2"
+    )}>
       {standings.map((group, groupIndex) => {
         const groupName = group.group ?? `Grupo ${groupIndex + 1}`;
-        // Normalize group name string by removing underscore when it comes from API
         const displayGroup = groupName.replace("_", " ");
 
         return (
           <section 
             key={`${groupName}-${groupIndex}`}
-            className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40"
+            className="flex flex-col overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900/40 relative group/table transition-colors hover:border-zinc-700"
           >
-            <header className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/80 px-5 py-4">
-              <h3 className="font-display text-sm font-bold uppercase tracking-wider text-zinc-100">
+            <Link
+              href={`/groups/${groupName.replace(' ', '_').toUpperCase()}`}
+              className="absolute top-0 left-0 right-0 h-14 z-10"
+              aria-label={`Ver detalles del ${displayGroup}`}
+            />
+            <header className="flex items-center justify-between border-b border-zinc-800/80 bg-zinc-900/80 px-5 py-4 transition-colors group-hover/table:bg-zinc-800/60">
+              <h3 className="font-display text-sm font-bold uppercase tracking-wider text-zinc-100 group-hover/table:text-emerald-400 transition-colors">
                 {displayGroup}
               </h3>
+              <span className="text-xs font-semibold text-emerald-400 opacity-0 transition-all group-hover/table:opacity-100 -translate-x-2 group-hover/table:translate-x-0 relative z-20 pointer-events-none">
+                Ver detalles &rarr;
+              </span>
             </header>
 
             <div className="overflow-x-auto">
@@ -38,7 +48,7 @@ export default function StandingsTable({ standings }: StandingsTableProps) {
                 </thead>
                 <tbody className="divide-y divide-zinc-800/40">
                   {group.table?.map((entry: StandingTableRow, i: number) => {
-                    const qualifies = i < 2; // Assuming top 2 qualify
+                    const qualifies = i < 2; 
 
                     return (
                       <tr
@@ -64,11 +74,14 @@ export default function StandingsTable({ standings }: StandingsTableProps) {
                           <Link
                             href={`/teams/${entry.team.id}`}
                             className={cn(
-                              "block truncate font-medium hover:text-blue-400 transition-colors",
+                              "flex items-center gap-2 truncate font-medium hover:text-blue-400 transition-colors",
                               qualifies ? "text-zinc-100" : "text-zinc-300"
                             )}
                           >
-                            {entry.team.name ?? "—"}
+                            {entry.team.crest && (
+                              <img src={entry.team.crest} alt={entry.team.name ?? ''} className="w-5 h-5 shrink-0 object-contain rounded-sm" loading="lazy" />
+                            )}
+                            <span className="truncate">{entry.team.name ?? "—"}</span>
                           </Link>
                         </td>
 
@@ -98,4 +111,3 @@ export default function StandingsTable({ standings }: StandingsTableProps) {
     </div>
   );
 }
-

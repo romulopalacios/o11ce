@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { motion } from "framer-motion";
 import type { MatchCardScore, MatchCardStatus } from "@/lib/mock/tournamentDashboard";
 import type { FootballMatch } from "@/server/services/football/types";
 
@@ -9,7 +10,9 @@ interface MatchCardProps {
   match?: FootballMatch;
   id?: number;
   homeTeam?: string;
+  homeTeamCrest?: string;
   awayTeam?: string;
+  awayTeamCrest?: string;
   status?: MatchCardStatus;
   score?: MatchCardScore | null;
   kickoffAt?: string;
@@ -19,10 +22,13 @@ interface MatchCardProps {
   animationDelayMs?: number;
 }
 
+
 interface NormalizedMatchCardData {
   id: number;
   homeTeam: string;
+  homeTeamCrest?: string;
   awayTeam: string;
+  awayTeamCrest?: string;
   status: MatchCardStatus;
   score: MatchCardScore | null;
   kickoffAt: string;
@@ -51,7 +57,9 @@ function normalizeMatchData(props: MatchCardProps): NormalizedMatchCardData {
     return {
       id: props.match.id,
       homeTeam: props.match.homeTeam.name ?? "TBD",
+      homeTeamCrest: props.match.homeTeam.crest,
       awayTeam: props.match.awayTeam.name ?? "TBD",
+      awayTeamCrest: props.match.awayTeam.crest,
       status,
       score,
       kickoffAt: props.match.utcDate,
@@ -64,7 +72,9 @@ function normalizeMatchData(props: MatchCardProps): NormalizedMatchCardData {
   return {
     id: props.id ?? 0,
     homeTeam: props.homeTeam ?? "TBD",
+    homeTeamCrest: props.homeTeamCrest,
     awayTeam: props.awayTeam ?? "TBD",
+    awayTeamCrest: props.awayTeamCrest,
     status: props.status ?? "scheduled",
     score: props.score ?? null,
     kickoffAt: props.kickoffAt ?? new Date().toISOString(),
@@ -96,19 +106,37 @@ export default function MatchCard(props: MatchCardProps) {
         : "Programado";
 
   const isLive = data.status === "live";
+  const MotionLink = motion.create(Link);
 
   return (
-    <Link
+    <MotionLink
+      layout
       href={data.href}
       data-testid={`match-card-${data.id}`}
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.15 } }}
+      whileHover={{ y: -4, scale: 1.01 }}
+      whileTap={{ scale: 0.98 }}
+      transition={{ 
+        layout: { type: "spring", stiffness: 400, damping: 30 },
+        type: "spring",
+        stiffness: 400,
+        damping: 30,
+        delay: Math.min((props.animationDelayMs || 0) / 1000, 0.5) 
+      }}
       className={cn(
-        "group relative block overflow-hidden rounded-xl border p-4 transition-all duration-200",
-        isLive ? "bg-zinc-900 border-zinc-700 hover:border-emerald-500/50" : "bg-zinc-900/50 border-zinc-800/80 hover:bg-zinc-900 hover:border-zinc-700"
+        "group relative block overflow-hidden rounded-xl border p-4 transition-colors",
+        isLive ? "bg-zinc-900 border-zinc-700 hover:border-emerald-500/50 hover:shadow-[0_0_15px_rgba(16,185,129,0.1)]" : "bg-zinc-900/50 border-zinc-800/80 hover:bg-zinc-900 hover:border-zinc-700 hover:shadow-[0_0_15px_rgba(255,255,255,0.03)]"        
       )}
       aria-label={`Abrir partido ${data.homeTeam} vs ${data.awayTeam}`}
     >
       {isLive && (
-        <div className="absolute left-0 top-0 h-full w-1 bg-emerald-500 rounded-l-xl"></div>
+        <motion.div 
+           initial={{ height: 0 }}
+           animate={{ height: "100%" }}
+           className="absolute left-0 top-0 w-1 bg-emerald-500 rounded-l-xl" 
+        />
       )}
       <article className="flex flex-col gap-3">
         <div className="flex items-center justify-between border-b border-zinc-800/60 pb-2">
@@ -132,8 +160,11 @@ export default function MatchCard(props: MatchCardProps) {
         </div>
 
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4">
-          <div className="min-w-0 text-right">
+          <div className="min-w-0 flex items-center justify-end gap-2 text-right">
             <p className="truncate text-sm font-bold text-zinc-100">{data.homeTeam}</p>
+            {data.homeTeamCrest && (
+               <img src={data.homeTeamCrest} alt={data.homeTeam} className="w-5 h-5 shrink-0 object-contain" loading="lazy" />
+            )}
           </div>
 
           <div
@@ -146,11 +177,14 @@ export default function MatchCard(props: MatchCardProps) {
             {data.score ? `${data.score.home} - ${data.score.away}` : "vs"}
           </div>
 
-          <div className="min-w-0 text-left">
+          <div className="min-w-0 flex items-center justify-start gap-2 text-left">
+            {data.awayTeamCrest && (
+               <img src={data.awayTeamCrest} alt={data.awayTeam} className="w-5 h-5 shrink-0 object-contain" loading="lazy" />
+            )}
             <p className="truncate text-sm font-bold text-zinc-100">{data.awayTeam}</p>
           </div>
         </div>
       </article>
-    </Link>
+    </MotionLink>
   );
 }

@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import Image from "next/image";
+import { Scale } from "lucide-react";
 
+import { CompareSelectorClient } from "@/components/compare/CompareSelectorClient";
 import { StatBar } from "@/components/compare/StatBar";
 import MatchCard from "@/components/match/MatchCard";
 import EmptyState from "@/components/ui/EmptyState";
-import { PageHero } from "@/components/ui/PageHero";
-import { PageWrapper } from "@/components/ui/PageWrapper";
-import { SectionHeader } from "@/components/ui/SectionHeader";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { cn } from "@/lib/utils";
-import { compareService } from "@/server/services/football/compareService";
+import { compareService } from "@/server/services/football/compareService";     
 import * as teamService from "@/server/services/football/teamService";
 
 export const revalidate = 300;
@@ -31,138 +31,135 @@ function parseTeamId(value?: string): number | null {
   return parsed;
 }
 
-interface TeamsGridProps {
-  selectedAId: number | null;
-}
-
-async function TeamsGrid({ selectedAId }: TeamsGridProps) {
-  const allTeams = await teamService.getAll();
-
-  return (
-    <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-      {allTeams.map((team) => (
-        <Link
-          key={team.id}
-          href={!selectedAId ? `/compare?a=${team.id}` : `/compare?a=${selectedAId}&b=${team.id}`}
-          className={cn(
-            "flex items-center gap-3 rounded-2xl border px-4 py-3",
-            "bg-[linear-gradient(125deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_44%,rgba(8,16,31,.5))] transition-all duration-150 hover:border-[var(--brand-cyan)]/45",
-            String(team.id) === String(selectedAId) ? "border-[var(--brand-cyan)]/45 shadow-[0_0_0_1px_rgba(52,216,255,0.12)]" : "border-[var(--b2)]/16",
-          )}
-        >
-          <img
-            src={team.crest ?? "/placeholder-crest.svg"}
-            alt={team.name}
-            className="h-7 w-7 rounded-[6px] border border-white/10"
-            loading="lazy"
-          />
-          <span className="truncate text-[12px] text-[var(--text)]">{team.name}</span>
-        </Link>
-      ))}
-    </div>
-  );
-}
-
 interface CompareContentProps {
   teamAId: number;
   teamBId: number;
 }
 
-async function CompareContent({ teamAId, teamBId }: CompareContentProps) {
+async function CompareContent({ teamAId, teamBId }: CompareContentProps) {      
   const data = await compareService.compareTeams(teamAId, teamBId);
   const { teamA, teamB, h2h } = data;
 
   return (
-    <div className="stack-5">
-      <div>
-        <Link
-          href="/compare"
-          className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] transition-colors duration-150 hover:text-[var(--text2)]"
-        >
-          ← cambiar equipos
-        </Link>
-      </div>
+    <div className="space-y-8">
+      <div className="relative rounded-3xl border border-zinc-800 bg-zinc-900/30 p-6 sm:p-8 overflow-hidden">
+        {/* Glow Effects */}
+        <div className="absolute -left-20 -top-20 h-40 w-40 rounded-full bg-emerald-500/10 blur-[50px]" />
+        <div className="absolute -right-20 -bottom-20 h-40 w-40 rounded-full bg-blue-500/10 blur-[50px]" />
 
-      <div className="rounded-3xl border border-[var(--b2)]/16 bg-[linear-gradient(125deg,rgba(58,168,255,.08),rgba(255,77,66,.07)_45%,rgba(8,16,31,.5))] p-4 sm:p-5">
-        <div className="mb-4 flex justify-center">
-          <span className="border-b border-[var(--b2)]/35 pb-1 font-mono text-[10px] tracking-[.14em] uppercase text-[var(--text2)]">
-            duelo directo
+        <div className="mb-8 flex justify-center relative">
+          <span className="border-b border-zinc-700/50 pb-1.5 font-mono text-[10px] tracking-[0.2em] font-bold uppercase text-zinc-500">
+            Duelo Directo
           </span>
         </div>
-        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-2 sm:gap-4">
-          <div className="flex flex-col items-center gap-2 min-w-0">
-            <img
-              src={teamA.crest ?? "/placeholder-crest.svg"}
-              alt={teamA.name}
-              className="h-10 w-10 rounded-[8px] border border-white/10 sm:h-12 sm:w-12"
-              loading="lazy"
-            />
-            <span className="max-w-[120px] truncate text-center text-[12px] font-medium text-[var(--text)] sm:text-[13px]">{teamA.name}</span>
-            {teamA.position ? (
-              <span className="text-center font-mono text-[10px] tracking-[.08em] text-[var(--text3)]">
+
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-4 sm:gap-6 relative">
+          {/* Team A */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md">
+              <Image
+                src={teamA.crest ?? "/placeholder-crest.svg"}
+                alt={teamA.name}
+                fill
+                className="object-contain"
+                sizes="(max-width: 640px) 64px, 80px"
+              />
+            </div>
+            <span className="text-center text-sm font-bold text-zinc-100 sm:text-base">{teamA.name}</span>
+            {teamA.position && (
+              <span className="text-center font-mono text-[11px] font-bold tracking-widest text-emerald-500 uppercase">
                 {teamA.position.group} · #{teamA.position.position}
               </span>
-            ) : null}
+            )}
           </div>
 
-          <span className="font-display text-[22px] leading-none text-[var(--gold)] sm:text-[26px]">VS</span>
+          <span className="font-display text-3xl font-black text-zinc-600 sm:text-4xl">VS</span>
 
-          <div className="flex flex-col items-center gap-2 min-w-0">
-            <img
-              src={teamB.crest ?? "/placeholder-crest.svg"}
-              alt={teamB.name}
-              className="h-10 w-10 rounded-[8px] border border-white/10 sm:h-12 sm:w-12"
-              loading="lazy"
-            />
-            <span className="max-w-[120px] truncate text-center text-[12px] font-medium text-[var(--text)] sm:text-[13px]">{teamB.name}</span>
-            {teamB.position ? (
-              <span className="text-center font-mono text-[10px] tracking-[.08em] text-[var(--text3)]">
+          {/* Team B */}
+          <div className="flex flex-col items-center gap-3">
+            <div className="relative h-16 w-16 sm:h-20 sm:w-20 drop-shadow-md">
+              <Image
+                src={teamB.crest ?? "/placeholder-crest.svg"}
+                alt={teamB.name}
+                fill
+                className="object-contain"
+                sizes="(max-width: 640px) 64px, 80px"
+              />
+            </div>
+            <span className="text-center text-sm font-bold text-zinc-100 sm:text-base">{teamB.name}</span>
+            {teamB.position && (
+              <span className="text-center font-mono text-[11px] font-bold tracking-widest text-blue-500 uppercase">
                 {teamB.position.group} · #{teamB.position.position}
               </span>
-            ) : null}
+            )}
           </div>
         </div>
       </div>
 
-      <div>
-        <SectionHeader title="estadisticas en el torneo" className="mb-4" />
+      <div className="space-y-4">
+        <h3 className="font-bold text-zinc-100 tracking-tight text-lg mb-2">Estadísticas en el Torneo</h3>
 
-        <StatBar label="puntos" valueA={teamA.stats.points} valueB={teamB.stats.points} />
-        <StatBar label="victorias" valueA={teamA.stats.wins} valueB={teamB.stats.wins} />
-        <StatBar label="goles a favor" valueA={teamA.stats.goalsFor} valueB={teamB.stats.goalsFor} />
-        <StatBar
-          label="goles en contra"
-          valueA={teamA.stats.goalsAgainst}
-          valueB={teamB.stats.goalsAgainst}
-          higherIsBetter={false}
-        />
-        <StatBar label="diferencia" valueA={teamA.stats.goalDiff} valueB={teamB.stats.goalDiff} />
-        <StatBar label="partidos" valueA={teamA.stats.played} valueB={teamB.stats.played} />
+        {/* Display Racha Reciente (Form) */}
+        <div className="flex items-center justify-between mb-6 px-2">
+          <div className="flex flex-col gap-1 items-start">
+            <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Racha de A</span>
+            <div className="flex gap-1">
+              {teamA.stats.form.map((res, i) => (
+                <span key={i} className={cn(
+                  "flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-xs font-bold",
+                  res === "W" ? "bg-emerald-500/20 text-emerald-400" : res === "D" ? "bg-zinc-500/20 text-zinc-400" : "bg-red-500/20 text-red-400"
+                )}>{res === "W" ? "V" : res === "D" ? "E" : "D"}</span>
+              ))}
+              {teamA.stats.form.length === 0 && <span className="text-zinc-600 text-xs italic">Sin partidos</span>}
+            </div>
+          </div>
+          
+          <span className="text-xs font-bold uppercase text-zinc-600 tracking-widest">Formato</span>
+
+          <div className="flex flex-col gap-1 items-end">
+            <span className="text-[10px] font-mono tracking-widest text-zinc-500 uppercase">Racha de B</span>
+            <div className="flex gap-1 flex-row-reverse">
+              {teamB.stats.form.map((res, i) => (
+                <span key={i} className={cn(
+                  "flex h-5 w-5 sm:h-6 sm:w-6 items-center justify-center rounded-full text-[10px] sm:text-xs font-bold",
+                  res === "W" ? "bg-blue-500/20 text-blue-400" : res === "D" ? "bg-zinc-500/20 text-zinc-400" : "bg-red-500/20 text-red-400"
+                )}>{res === "W" ? "V" : res === "D" ? "E" : "D"}</span>
+              ))}
+              {teamB.stats.form.length === 0 && <span className="text-zinc-600 text-xs italic">Sin partidos</span>}
+            </div>
+          </div>
+        </div>
+
+        <div className="grid gap-3">
+          <StatBar label="puntos" valueA={teamA.stats.points} valueB={teamB.stats.points} />
+          <StatBar label="victorias" valueA={teamA.stats.wins} valueB={teamB.stats.wins} />
+          <StatBar label="goles a favor" valueA={teamA.stats.goalsFor} valueB={teamB.stats.goalsFor} />
+          <StatBar
+            label="goles en contra"
+            valueA={teamA.stats.goalsAgainst}
+            valueB={teamB.stats.goalsAgainst}
+            higherIsBetter={false}
+          />
+          <StatBar label="diferencia" valueA={teamA.stats.goalDiff} valueB={teamB.stats.goalDiff} />
+          <StatBar label="partidos" valueA={teamA.stats.played} valueB={teamB.stats.played} />
+        </div>
       </div>
 
-      <div>
-        <SectionHeader title="enfrentamientos directos" className="mb-3" />
+      <div className="space-y-4 pt-4">
+        <h3 className="font-bold text-zinc-100 tracking-tight text-lg mb-2">Enfrentamientos Directos</h3>
 
         {h2h.length > 0 ? (
-          h2h.map((match, index) => (
-            <MatchCard key={match.id} match={match} animationDelayMs={index * 60} />
-          ))
+          <div className="grid gap-3">
+            {h2h.map((match, index) => (
+              <MatchCard key={match.id} match={match} animationDelayMs={index * 60} />
+            ))}
+          </div>
         ) : (
           <EmptyState
             message="sin enfrentamientos directos"
-            description="no se han enfrentado en este torneo"
             className="border-dashed"
           />
         )}
-      </div>
-
-      <div className="pt-5 text-center">
-        <Link
-          href="/compare"
-          className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)] transition-colors duration-150 hover:text-ac"
-        >
-          comparar otros equipos →
-        </Link>
       </div>
     </div>
   );
@@ -173,51 +170,47 @@ export default async function ComparePage({ searchParams }: ComparePageProps) {
 
   const teamAId = parseTeamId(resolvedSearchParams?.a);
   const teamBId = parseTeamId(resolvedSearchParams?.b);
+  const allTeams = await teamService.getAll();
 
   return (
-    <>
-      <PageHero title="COMPARAR" subtitle="comparador de selecciones" meta="Mundial 2026" />
+    <main className="min-h-screen bg-zinc-950 p-4 md:p-8">
+      <div className="mx-auto max-w-4xl space-y-6 md:space-y-8">
+        <header className="flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-zinc-900 border border-zinc-800 text-blue-500">
+            <Scale className="h-5 w-5" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-zinc-100">H2H Compare Arena</h1>
+            <p className="text-sm text-zinc-400">Comparativa de rendimiento y encuentros previos</p>
+          </div>
+        </header>
 
-      <PageWrapper>
-        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
-          <SectionHeader title="comparar" />
+        <CompareSelectorClient teams={allTeams} selectedAId={teamAId} selectedBId={teamBId} />
 
-          <p className="ty-body text-[var(--text2)]">
-            Selecciona dos equipos para ver comparativa de rendimiento y enfrentamientos directos.
-          </p>
-
-        {!teamAId || !teamBId ? (
-          <>
+        <section className="rounded-3xl border border-zinc-800 bg-zinc-900/30 p-4 md:p-6 backdrop-blur-xl">
+          {!teamAId || !teamBId ? (
+            <EmptyState message="Selecciona dos equipos para ver la comparativa" />
+          ) : (
             <Suspense
               fallback={(
-                  <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                  {Array.from({ length: 9 }).map((_, i) => (
-                      <div key={i} className="h-[74px] animate-pulse rounded-2xl border border-white/10 bg-white/[0.03]" />
-                  ))}
+                <div className="space-y-8">
+                  <div className="rounded-3xl border border-zinc-800 bg-zinc-900 p-6 flex justify-between">
+                    <Skeleton className="h-20 w-20 rounded-full" />
+                    <Skeleton className="h-10 w-10 self-center" />
+                    <Skeleton className="h-20 w-20 rounded-full" />
+                  </div>
+                  <div className="space-y-3">
+                    <Skeleton count={5} height="h-14 rounded-2xl" />
+                  </div>
                 </div>
               )}
             >
-              <TeamsGrid selectedAId={teamAId} />
+              <CompareContent teamAId={teamAId} teamBId={teamBId} />
             </Suspense>
-          </>
-        ) : (
-          <Suspense
-            fallback={(
-              <>
-                <div className="grid grid-cols-3 gap-4 mb-6">
-                  <Skeleton height="h-[108px]" />
-                  <Skeleton height="h-[24px]" className="self-center" />
-                  <Skeleton height="h-[108px]" />
-                </div>
-                <Skeleton count={5} height="h-[52px]" />
-              </>
-            )}
-          >
-            <CompareContent teamAId={teamAId} teamBId={teamBId} />
-          </Suspense>
-        )}
+          )}
         </section>
-      </PageWrapper>
-    </>
+      </div>
+    </main>
   );
 }
+

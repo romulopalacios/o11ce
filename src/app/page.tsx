@@ -181,26 +181,31 @@ export default async function HomePage() {
             {dashboardData.heroDescription}
           </p>
         </div>
-        <div className="flex gap-3">
-            {hasMatches && (
-              <Link
-                href="/matches"
-                className="inline-flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-white px-5 py-2.5 text-sm font-bold text-zinc-950 transition-colors"
-                data-testid="home-hero-cta-matches"
-              >
-                Ver Partidos
-              </Link>
+        <div className="flex flex-col gap-4 md:items-end">
+            <div className="flex gap-3">
+              {hasMatches && (
+                <Link
+                  href="/matches"
+                  className="inline-flex items-center justify-center rounded-lg bg-zinc-100 hover:bg-white px-5 py-2.5 text-sm font-bold text-zinc-950 transition-colors"
+                  data-testid="home-hero-cta-matches"
+                >
+                  Ver Partidos
+                </Link>
+              )}
+              {hasGroups && (
+                <Link
+                  href="/groups"
+                  className="inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-zinc-100 transition-colors"
+                  data-testid="home-hero-cta-groups"
+                >
+                  Tabla de Posiciones
+                </Link>
+              )}
+            </div>
+            {showStartCountdown && (
+              <StartCountdownKpi targetIso={dashboardData.worldCupStartIso} />
             )}
-            {hasGroups && (
-              <Link
-                href="/groups"
-                className="inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 px-5 py-2.5 text-sm font-semibold text-zinc-100 transition-colors"
-                data-testid="home-hero-cta-groups"
-              >
-                Tribuna de Grupos
-              </Link>
-            )}
-          </div>
+        </div>
       </header>
 
       {/* Grid de KPIs Metrics - Linea minimalista */}
@@ -258,3 +263,4 @@ export default async function HomePage() {
     </div>
   )
 }
+

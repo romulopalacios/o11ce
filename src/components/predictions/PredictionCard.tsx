@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import type { CSSProperties } from "react";
+import Image from "next/image";
 
 import { cn } from "@/lib/utils";
 import type { ScheduledMatchPrediction } from "@/server/services/predictions/predictionService";
@@ -20,86 +21,105 @@ function formatLocalDateTime(utcDate: string): string {
 }
 
 export default function PredictionCard({ prediction, animationDelayMs = 0 }: PredictionCardProps) {
-  const isFallback = prediction.probabilities.homeWin === prediction.probabilities.awayWin;
+  const isFallback = false;
   const animationStyle = {
     "--prediction-delay": `${animationDelayMs}ms`,
   } as CSSProperties;
 
   return (
     <motion.article
-      className="mb-[8px] rounded-2xl border border-[var(--b2)]/20 bg-[linear-gradient(126deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.5))] px-4 py-4 transition-colors duration-200 hover:border-[var(--brand-cyan)]/45 animate-fade-up [animation-delay:var(--prediction-delay)] sm:px-5"
+      className="mb-2 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4 transition-colors duration-200 hover:border-purple-500/30 hover:bg-zinc-900 animate-fade-up [animation-delay:var(--prediction-delay)] sm:p-5"
       style={animationStyle}
       whileHover={{ y: -2, scale: 1.01 }}
       transition={{ duration: 0.16, ease: "easeOut" }}
     >
-      <div className="mb-5 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3">
-        <span className="truncate font-sans text-[13px] font-medium text-[var(--text)]">{prediction.homeTeam.name}</span>
-        <div className="flex flex-col items-center gap-[2px]">
-          <span className="font-mono text-[10px] tracking-[.12em] uppercase text-[var(--text3)]">vs</span>
-          <span className="font-mono text-[10px] tracking-[.08em] text-[var(--text3)]">{formatLocalDateTime(prediction.utcDate)}</span>
+      <div className="mb-6 grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-4">
+        {/* Home Team */}
+        <div className="flex items-center gap-3 justify-end text-right">
+          <span className="truncate font-sans text-sm font-semibold text-zinc-100">{prediction.homeTeam.name}</span>
+          {typeof (prediction.homeTeam as any).crest === "string" && (
+            <div className="h-8 w-8 shrink-0 overflow-hidden relative drop-shadow-sm">
+              <Image
+                src={(prediction.homeTeam as any).crest}
+                alt={prediction.homeTeam.name}
+                fill
+                className="object-contain"
+                sizes="32px"
+              />
+            </div>
+          )}
         </div>
-        <span className="truncate text-right font-sans text-[13px] font-medium text-[var(--text)]">{prediction.awayTeam.name}</span>
+
+        {/* Center VS Date */}
+        <div className="flex flex-col items-center justify-center gap-1 min-w-[100px]">
+          <span className="rounded-md bg-zinc-800/80 px-2 py-0.5 font-mono text-[10px] font-bold tracking-widest uppercase text-zinc-400">VS</span>
+          <span className="font-mono text-[10px] text-zinc-500">{formatLocalDateTime(prediction.utcDate)}</span>
+        </div>
+
+        {/* Away Team */}
+        <div className="flex items-center gap-3">
+          {typeof (prediction.awayTeam as any).crest === "string" && (
+            <div className="h-8 w-8 shrink-0 overflow-hidden relative drop-shadow-sm">
+              <Image
+                src={(prediction.awayTeam as any).crest}
+                alt={prediction.awayTeam.name}
+                fill
+                className="object-contain"
+                sizes="32px"
+              />
+            </div>
+          )}
+          <span className="truncate font-sans text-sm font-semibold text-zinc-100">{prediction.awayTeam.name}</span>
+        </div>
       </div>
 
       {isFallback ? (
-        <div className="py-2 text-center">
-          <p className="font-mono text-label text-[var(--text3)]">predicción disponible cuando el torneo comience</p>
+        <div className="flex items-center justify-center rounded-xl bg-zinc-900/50 py-4 border border-zinc-800/50">
+          <p className="font-mono text-xs font-medium text-zinc-500 uppercase tracking-wider">Esperando más datos del torneo para la predicción</p>
         </div>
       ) : (
-        <>
-          <div className="mb-3 grid grid-cols-[minmax(0,1fr)_56px_minmax(0,1fr)] items-end gap-3">
-            <div className="flex flex-col gap-[5px]">
-              <span className="font-display text-[24px] text-ac leading-none">{prediction.probabilities.homeWin}%</span>
-              <div className="relative h-[5px] overflow-hidden rounded-full bg-[var(--b1)]/45">
-                <motion.div
-                  className="absolute left-0 top-0 h-full bg-ac rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${prediction.probabilities.homeWin}%` }}
-                  transition={{ duration: 0.55, ease: "easeOut" }}
-                />
-              </div>
-              <span className="font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">local</span>
+        <div className="space-y-3">
+          <div className="flex justify-between items-end px-1">
+            <div className="flex flex-col items-start gap-1">
+              <span className="text-2xl font-bold tracking-tight text-zinc-100 leading-none">{prediction.probabilities.homeWin}%</span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Local</span>
             </div>
-
-            <div className="flex flex-col items-center gap-[5px]">
-              <span className="font-mono text-[11px] text-[var(--text2)]">{prediction.probabilities.draw}%</span>
-              <div className="relative h-[5px] w-[42px] overflow-hidden rounded-full bg-[var(--b1)]/45">
-                <motion.div
-                  className="absolute left-0 top-0 h-full bg-t3 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${prediction.probabilities.draw}%` }}
-                  transition={{ duration: 0.55, ease: "easeOut" }}
-                />
-              </div>
-              <span className="text-center font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">empate</span>
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-sm font-medium text-zinc-400 leading-none">{prediction.probabilities.draw}%</span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Empate</span>
             </div>
-
-            <div className="flex flex-col items-end gap-[5px]">
-              <span
-                className={cn(
-                  "font-display text-[24px] leading-none",
-                  prediction.probabilities.awayWin > 40 ? "text-ac" : "text-t2",
-                )}
-              >
-                {prediction.probabilities.awayWin}%
-              </span>
-              <div className="relative h-[5px] w-full overflow-hidden rounded-full bg-[var(--b1)]/45">
-                <motion.div
-                  className="absolute left-0 top-0 h-full rounded-full"
-                  style={{
-                    background: prediction.probabilities.awayWin > 40 ? "var(--accent)" : "var(--text3)",
-                  }}
-                  initial={{ width: 0 }}
-                  animate={{ width: `${prediction.probabilities.awayWin}%` }}
-                  transition={{ duration: 0.55, ease: "easeOut" }}
-                />
-              </div>
-              <span className="text-right font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">visitante</span>
+            <div className="flex flex-col items-end gap-1">
+              <span className="text-2xl font-bold tracking-tight text-zinc-100 leading-none">{prediction.probabilities.awayWin}%</span>
+              <span className="font-mono text-[10px] uppercase tracking-wider text-zinc-500 font-semibold">Visitante</span>
             </div>
           </div>
 
-          <p className="text-right font-mono text-[10px] tracking-[.08em] uppercase text-[var(--text3)]">basado en datos del torneo</p>
-        </>
+          {/* Progress Bar Container */}
+          <div className="relative h-2 w-full overflow-hidden rounded-full bg-zinc-800 flex">
+            {/* Home Win Bar */}
+            <motion.div
+              className="h-full bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.4)] relative z-10 rounded-l-full"   
+              initial={{ width: 0 }}
+              animate={{ width: `${prediction.probabilities.homeWin}%` }}   
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+            {/* Draw Bar */}
+            <motion.div
+              className="h-full bg-zinc-600 relative z-0"   
+              initial={{ width: 0 }}
+              animate={{ width: `${prediction.probabilities.draw}%` }}      
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+            {/* Away Win Bar */}
+            <motion.div
+              className="h-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.4)] relative z-10 rounded-r-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${prediction.probabilities.awayWin}%` }}   
+              transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            />
+          </div>
+        </div>
+
       )}
     </motion.article>
   );

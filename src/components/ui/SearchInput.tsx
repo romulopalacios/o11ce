@@ -1,6 +1,8 @@
 "use client";
 
 import { cn } from "@/lib/utils";
+import { Search, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SearchInputProps {
   value: string;
@@ -16,7 +18,12 @@ export function SearchInput({
   resultCount,
 }: SearchInputProps) {
   return (
-    <div className="relative mb-7 sm:mb-8">
+    <motion.div 
+      className="relative mb-7 sm:mb-8 group"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+    >
       <label htmlFor="global-search-input" className="sr-only">
         Buscar contenido
       </label>
@@ -27,40 +34,45 @@ export function SearchInput({
         onChange={(event) => onChange(event.target.value)}
         placeholder={placeholder}
         className={cn(
-          "w-full rounded-2xl border border-[var(--b2)]/22",
-          "bg-[linear-gradient(118deg,rgba(58,168,255,.08),rgba(255,77,66,.05)_40%,rgba(11,19,34,.5))]",
-          "pl-[68px] pr-20 py-3.5 sm:py-3",
-          "font-mono text-[12px] leading-[1.2] tracking-[.045em] text-[var(--text)]",
-          "placeholder:text-[var(--text3)]",
-          "focus-visible:border-cyan-300/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/45",
-          "transition-all duration-150",
+          "w-full rounded-2xl border border-zinc-800 bg-zinc-900/50",
+          "pl-[44px] pr-20 py-3.5 sm:py-3",
+          "text-sm text-zinc-100",
+          "placeholder:text-zinc-500",
+          "focus-visible:border-emerald-500/50 focus-visible:outline-none focus-visible:bg-zinc-800",
+          "transition-all duration-300",
         )}
         aria-describedby={resultCount !== undefined && value ? "search-result-count" : undefined}
       />
 
-      <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 font-mono text-[9px] uppercase tracking-[.16em] text-[var(--text2)]">
-        filtrar
-      </span>
+      <Search className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-500 transition-colors group-focus-within:text-emerald-500" />
 
       <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-2">
-        {value ? (
-          <>
-            {resultCount !== undefined ? (
-              <span id="search-result-count" className="font-mono text-[10px] text-[var(--text2)]">
-                {resultCount}
-              </span>
-            ) : null}
-            <button
-              type="button"
-              onClick={() => onChange("")}
-              aria-label="Limpiar busqueda"
-              className="h-7 w-7 rounded-full border border-[var(--b2)]/24 bg-[var(--s2)]/52 font-mono text-[10px] text-[var(--text2)] transition-all hover:border-[var(--brand-cyan)]/45 hover:text-[var(--text)] active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-cyan)]/70 focus-visible:ring-offset-1 focus-visible:ring-offset-[var(--brand-navy)]"
+        <AnimatePresence>
+          {value && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8, filter: "blur(4px)" }}
+              animate={{ opacity: 1, scale: 1, filter: "blur(0px)" }}
+              exit={{ opacity: 0, scale: 0.8, filter: "blur(4px)" }}
+              transition={{ duration: 0.15 }}
+              className="flex items-center gap-2"
             >
-              ✕
-            </button>
-          </>
-        ) : null}
+              {resultCount !== undefined ? (
+                <span id="search-result-count" className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-zinc-800 text-zinc-400">
+                  {resultCount} res
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                aria-label="Limpiar busqueda"
+                className="flex items-center justify-center h-6 w-6 rounded-full bg-zinc-800/80 text-zinc-400 transition-all hover:bg-zinc-700 hover:text-zinc-100 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-    </div>
+    </motion.div>
   );
 }

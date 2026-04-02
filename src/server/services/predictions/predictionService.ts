@@ -10,6 +10,7 @@ import {
   type TeamStatsInput,
   type TournamentAverages,
 } from "./algorithm";
+import { getEloRating } from "./eloBase";
 
 export interface ScheduledMatchPrediction {
   matchId: number;
@@ -128,9 +129,12 @@ function buildTournamentAverages(teamAggregates: Map<number, TeamAggregate>): To
 
 function teamAggregateToStats(
   teamAggregate: TeamAggregate | undefined,
+  eloRating: number,
 ): TeamStatsInput {
   if (!teamAggregate || teamAggregate.played <= 0) {
     return {
+      eloRating,
+      matchesPlayed: 0,
       goalsForPerMatch: null,
       goalsAgainstPerMatch: null,
       groupPoints: null,
@@ -146,6 +150,8 @@ function teamAggregateToStats(
     .map((entry) => entry.result);
 
   return {
+    eloRating,
+    matchesPlayed: teamAggregate.played,
     goalsForPerMatch: teamAggregate.goalsFor / safePlayed,
     goalsAgainstPerMatch: teamAggregate.goalsAgainst / safePlayed,
     groupPoints: teamAggregate.groupPoints,
@@ -177,8 +183,11 @@ export async function getScheduledPredictions(): Promise<ScheduledMatchPredictio
       return [...scheduledMatches]
         .sort((a, b) => new Date(a.utcDate).getTime() - new Date(b.utcDate).getTime())
         .map((match) => {
-          const homeStats = teamAggregateToStats(teamAggregates.get(match.homeTeam.id));
-          const awayStats = teamAggregateToStats(teamAggregates.get(match.awayTeam.id));
+          const homeElo = getEloRating(match.homeTeam.tla);
+          const awayElo = getEloRating(match.awayTeam.tla);
+
+          const homeStats = teamAggregateToStats(teamAggregates.get(match.homeTeam.id), homeElo);
+          const awayStats = teamAggregateToStats(teamAggregates.get(match.awayTeam.id), awayElo);
 
           return {
             matchId: match.id,

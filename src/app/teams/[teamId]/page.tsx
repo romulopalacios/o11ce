@@ -6,10 +6,8 @@ import { TRPCError } from "@trpc/server";
 import StandingsTable from "@/components/groups/StandingsTable";
 import MatchCard from "@/components/match/MatchCard";
 import TeamProfile from "@/components/teams/TeamProfile";
-import { PageHero } from "@/components/ui/PageHero";
-import { PageWrapper } from "@/components/ui/PageWrapper";
-import * as groupService from "@/server/services/football/groupService";
-import * as matchService from "@/server/services/football/matchService";
+import * as groupService from "@/server/services/football/groupService";        
+import * as matchService from "@/server/services/football/matchService";        
 import * as teamService from "@/server/services/football/teamService";
 
 interface TeamPageProps {
@@ -27,7 +25,7 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
   if (!Number.isInteger(parsedTeamId) || parsedTeamId <= 0) {
     return {
       title: "Equipo no encontrado | O11CE",
-      description: "No se encontro el perfil del equipo solicitado.",
+      description: "No se encontró el perfil del equipo solicitado.",
     };
   }
 
@@ -38,7 +36,7 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
     if (isNotFoundError(error)) {
       return {
         title: "Equipo no encontrado | O11CE",
-        description: "No se encontro el perfil del equipo solicitado.",
+        description: "No se encontró el perfil del equipo solicitado.",
       };
     }
 
@@ -48,7 +46,7 @@ export async function generateMetadata({ params }: TeamPageProps): Promise<Metad
   if (!team) {
     return {
       title: "Equipo no encontrado | O11CE",
-      description: "No se encontro el perfil del equipo solicitado.",
+      description: "No se encontró el perfil del equipo solicitado.",
     };
   }
 
@@ -92,48 +90,58 @@ export default async function TeamPage({ params }: TeamPageProps) {
   });
 
   return (
-    <>
-      <PageHero title="PERFIL DEL EQUIPO" subtitle="detalle de selección" meta="Mundial 2026" />
+    <main className="min-h-screen bg-zinc-950 p-4 md:p-8">
+      <div className="mx-auto max-w-4xl space-y-6 md:space-y-8">
+        <TeamProfile team={team} />
 
-      <PageWrapper>
-        <section className="section-shell stack-5 p-5 sm:p-6 lg:p-7">
-          <TeamProfile team={team} />
+        <div className="flex flex-wrap gap-4">
+          <Link
+            href={`/compare?a=${parsedTeamId}`}
+            className="inline-flex items-center justify-center rounded-lg bg-emerald-500/10 px-4 py-2.5 text-sm font-semibold text-emerald-500 border border-emerald-500/20 transition-colors hover:bg-emerald-500 hover:text-white"
+          >
+            Comparar con otro equipo
+          </Link>
+          <Link
+            href="/teams"
+            className="inline-flex items-center justify-center rounded-lg bg-zinc-900 border border-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
+          >
+            Volver a Equipos
+          </Link>
+        </div>
 
-          <div>
-            <Link
-              href={`/compare?a=${parsedTeamId}`}
-              className="rounded-md font-mono text-[11px] tracking-[.08em] text-[var(--text2)] transition-colors hover:text-[var(--accent)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-cyan)]/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--brand-navy)]"
-            >
-              comparar con otro equipo →
-            </Link>
-          </div>
-
-          <section className="rounded-2xl border border-[var(--b2)]/55 bg-[var(--brand-navy)]/55 p-4 sm:p-5">
-            <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
-              partidos en el torneo
+        {teamGroup && (
+          <section className="space-y-4">
+            <h2 className="font-bold text-zinc-100 tracking-tight text-lg flex items-center gap-2">
+              <span className="h-6 w-1 rounded-full bg-blue-500" />
+              Posición en el Grupo {(teamGroup.group?.replace("GROUP_", "") ?? "")}
             </h2>
+            <div className="rounded-3xl border border-zinc-800 bg-zinc-900/30 p-2 md:p-4 backdrop-blur-xl">
+              <StandingsTable standings={[teamGroup]} />
+            </div>
+          </section>
+        )}
 
+        <section className="space-y-4">
+          <h2 className="font-bold text-zinc-100 tracking-tight text-lg flex items-center gap-2">
+            <span className="h-6 w-1 rounded-full bg-emerald-500" />
+            Partidos en el Torneo
+          </h2>
+          
+          <div className="rounded-3xl border border-zinc-800 bg-zinc-900/30 p-4 md:p-6 backdrop-blur-xl">
             {filteredMatches.length > 0 ? (
-              <div className="space-y-3">
+              <div className="grid gap-3">
                 {filteredMatches.map((match, index) => (
                   <MatchCard key={match.id} match={match} animationDelayMs={index * 60} />
                 ))}
               </div>
             ) : (
-              <p className="text-[13px] text-[var(--text2)]">sin partidos registrados</p>
+              <div className="flex items-center justify-center py-12 px-4 rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 text-center">
+                <p className="text-zinc-500 font-medium">No se encontraron partidos programados para este equipo.</p>
+              </div>
             )}
-          </section>
-
-          {teamGroup ? (
-            <section className="rounded-2xl border border-[var(--b2)]/55 bg-[var(--brand-navy)]/55 p-4 sm:p-5">
-              <h2 className="mb-4 font-mono text-[10px] font-medium tracking-[.12em] uppercase text-[var(--text3)]">
-                posicion en el grupo
-              </h2>
-              <StandingsTable standings={[teamGroup]} />
-            </section>
-          ) : null}
+          </div>
         </section>
-      </PageWrapper>
-    </>
+      </div>
+    </main>
   );
 }

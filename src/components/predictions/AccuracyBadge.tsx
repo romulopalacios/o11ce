@@ -1,3 +1,5 @@
+import { Activity, Target } from "lucide-react";
+
 interface AccuracyBadgeProps {
   accuracy: number;
   correct: number;
@@ -6,18 +8,18 @@ interface AccuracyBadgeProps {
 
 export default function AccuracyBadge({ accuracy, correct, total }: AccuracyBadgeProps) {
   return (
-    <div className="mb-6 flex items-center gap-4 rounded-2xl border border-[var(--b2)]/20 bg-[linear-gradient(126deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.5))] px-5 py-4 backdrop-blur-sm">
-      <div>
-        <span className="font-display text-[32px] leading-none text-[var(--accent)]">
-          {accuracy}%
-        </span>
+    <div className="mb-6 flex flex-col sm:flex-row sm:items-center gap-4 rounded-2xl border border-purple-500/20 bg-purple-500/5 p-4 sm:px-6 backdrop-blur-sm">
+      <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-purple-500/20 text-purple-400">
+        <Target className="h-6 w-6" />
       </div>
-      <div>
-        <div className="text-[13px] font-medium text-[var(--text)]">
-          precision del algoritmo
+      <div className="flex-1">
+        <div className="flex items-baseline gap-2">
+          <span className="text-3xl font-bold tracking-tight text-purple-400">{accuracy}%</span>
+          <span className="text-sm font-medium text-zinc-300">Precisión del Algoritmo</span>
         </div>
-        <div className="mt-[3px] font-mono text-[10px] tracking-[.1em] uppercase text-[var(--text3)]">
-          {correct} de {total} predicciones evaluadas
+        <div className="mt-1 flex items-center gap-1.5 font-mono text-[11px] tracking-wider text-zinc-500 uppercase">
+          <Activity className="h-3 w-3" />
+          <span>{correct} aciertos de {total} predicciones evaluadas</span>
         </div>
       </div>
     </div>

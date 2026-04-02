@@ -4,8 +4,9 @@ import ScoreBoard from "@/components/match/ScoreBoard";
 import EmptyState from "@/components/ui/EmptyState";
 import { cn } from "@/lib/utils";
 import type { MatchDetailResponse } from "@/server/services/football/types";
+import { Target, Info, Timer, BrainCircuit, BarChart3 } from "lucide-react";
 
-interface MatchPredictionSummary {
+export interface MatchPredictionSummary {
   homeWinProb: number;
   drawProb: number;
   awayWinProb: number;
@@ -98,38 +99,46 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
 
   return (
     <section className="stack-5">
-      <div>
+      <div className="relative z-10 w-full mb-8">
         <ScoreBoard match={match} hasTimeline={!isPre} />
         {isPre ? (
-          <div className="mt-1 rounded-b-2xl border border-t-0 border-[var(--b2)]/45 bg-[var(--brand-navy)]/45 px-5 py-4 text-center">
-            <p className="mb-2 font-mono text-label tracking-[.1em] text-zinc-500">el partido comienza en</p>
-            <MatchCountdown utcDate={match.utcDate} />
+          <div className="relative mx-auto mt-2 w-full rounded-2xl border border-zinc-800 bg-zinc-900/60 px-6 py-6 shadow-md backdrop-blur-sm">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Timer className="w-4 h-4 text-emerald-400" />
+              <p className="font-display text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400">
+                El partido comienza en
+              </p>
+            </div>
+            <div className="relative z-20">
+              <MatchCountdown utcDate={match.utcDate} />
+            </div>
           </div>
         ) : (
           <EventTimeline match={match} />
         )}
       </div>
 
-      <div className="space-y-2 rounded-2xl border border-[var(--b2)]/45 bg-[var(--brand-navy)]/45 px-4 py-4 sm:px-5 sm:py-5">
-        <span className="block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
-          información general
+<div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 shadow-lg relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
+        <span className="block font-display text-xs font-bold tracking-[0.15em] uppercase text-zinc-400 relative z-10">
+          <Info className="inline-block w-4 h-4 mr-2 -mt-0.5" /> INFORMACIÓN GENERAL
         </span>
-        <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-          <div>
-            <span className="font-mono text-label text-zinc-500">estado</span>
-            <p className="mt-[2px] text-body text-[var(--text)]">{formatStatus(match.status)}</p>
+        <div className="grid grid-cols-2 gap-4 relative z-10 sm:grid-cols-4">
+          <div className="rounded-xl bg-zinc-800/40 p-3 border border-zinc-700/50">
+            <span className="block font-mono text-[10px] font-semibold text-emerald-400 uppercase tracking-widest mb-1">estado</span>  
+            <p className="text-sm font-semibold text-zinc-100">{formatStatus(match.status)}</p>
           </div>
-          <div>
-            <span className="font-mono text-label text-zinc-500">fase</span>
-            <p className="mt-[2px] text-body text-[var(--text)]">{formatStage(match.stage)}</p>
+          <div className="rounded-xl bg-zinc-800/40 p-3 border border-zinc-700/50">
+            <span className="block font-mono text-[10px] font-semibold text-emerald-400 uppercase tracking-widest mb-1">fase</span>    
+            <p className="text-sm font-semibold text-zinc-100">{formatStage(match.stage)}</p>
           </div>
-          <div>
-            <span className="font-mono text-label text-zinc-500">grupo</span>
-            <p className="mt-[2px] text-body text-[var(--text)]">{match.group ?? "—"}</p>
+          <div className="rounded-xl bg-zinc-800/40 p-3 border border-zinc-700/50">
+            <span className="block font-mono text-[10px] font-semibold text-emerald-400 uppercase tracking-widest mb-1">grupo</span>   
+            <p className="text-sm font-semibold text-zinc-100">{match.group ?? "—"}</p>
           </div>
-          <div>
-            <span className="font-mono text-label text-zinc-500">fecha</span>
-            <p className="mt-[2px] text-body text-[var(--text)]">
+          <div className="rounded-xl bg-zinc-800/40 p-3 border border-zinc-700/50">
+            <span className="block font-mono text-[10px] font-semibold text-emerald-400 uppercase tracking-widest mb-1">fecha</span>   
+            <p className="text-sm font-semibold text-zinc-100">
               {new Intl.DateTimeFormat("es", {
                 day: "numeric",
                 month: "short",
@@ -142,92 +151,96 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
       </div>
 
       {!isPre && (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
-            goles
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 shadow-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent pointer-events-none" />
+          <span className="mb-4 block font-display text-xs font-bold tracking-[0.15em] uppercase text-zinc-400 relative z-10">
+            <Target className="inline-block w-4 h-4 mr-2 -mt-0.5" /> GOLES
           </span>
-          {match.goals.length === 0 ? (
-            <EmptyState message="sin goles registrados" />
-          ) : (
-            <ul className="space-y-2">
-              {match.goals.map((goal, index) => (
-                <li
-                  key={`${goal.team.id}-${goal.minute}-${index}`}
-                  className="flex items-center gap-3 py-1.5"
-                >
-                  <span className="w-7 shrink-0 text-right font-mono text-label text-zinc-500">
-                    {formatMinute(goal.minute, goal.injuryTime)}
-                  </span>
-                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-[3px] bg-[#22c55e15] text-[11px] text-[#22c55e]">
-                    ⚽
-                  </span>
-                  <div className="flex-1 min-w-0">
-                    <span className="text-body text-[var(--text)]">{goal.scorer.name}</span>
-                    <span className="ml-2 text-caption text-zinc-300">{goal.team.name}</span>
-                  </div>
-                  {goal.type !== "REGULAR" && (
-                    <span className="shrink-0 font-mono text-label text-zinc-500">
-                      {goal.type === "PENALTY" ? "pen." : "p.p."}
+          <div className="relative z-10">
+            {match.goals.length === 0 ? (
+              <EmptyState message="sin goles registrados" />
+            ) : (
+              <ul className="space-y-3">
+                {match.goals.map((goal, index) => (
+                  <li
+                    key={`${goal.team.id}-${goal.minute}-${index}`}
+                    className="flex items-center gap-4 rounded-xl bg-zinc-800/30 px-4 py-3 border border-zinc-800/60 transition-colors hover:bg-zinc-800/50"
+                  >
+                    <span className="w-10 shrink-0 text-center font-mono text-sm font-bold text-emerald-400">
+                      {formatMinute(goal.minute, goal.injuryTime)}
                     </span>
-                  )}
-                </li>
-              ))}
-            </ul>
-          )}
+                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#22c55e15] text-[16px] text-emerald-400 border border-emerald-500/20">
+                      <Target className="w-4 h-4" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="block text-sm font-semibold text-zinc-100 truncate">{goal.scorer.name}</span>
+                      <span className="block text-xs font-medium text-zinc-400 truncate">{goal.team.name}</span>
+                    </div>
+                    {goal.type !== "REGULAR" && (
+                      <span className="shrink-0 rounded bg-zinc-800 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-wider text-zinc-400 border border-zinc-700">
+                        {goal.type === "PENALTY" ? "pen" : "p.p."}
+                      </span>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
         </div>
       )}
 
       {(isLive || isPost) && (
-        <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/50 border border-zinc-800 px-4 py-3">
-          <p className="text-center font-mono text-label text-zinc-500">
-            tarjetas y sustituciones no disponibles en el plan actual
+        <div className="rounded-2xl border border-dashed border-zinc-800 bg-zinc-900/30 px-5 py-4">
+          <p className="text-center text-xs font-medium uppercase tracking-widest text-zinc-600">
+            tarjetas y sustituciones no disponibles
           </p>
         </div>
       )}
 
       {isPre && prediction && (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
-            predicción
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 shadow-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-bl from-blue-500/5 to-transparent pointer-events-none" />
+          <span className="block font-display text-xs font-bold tracking-[0.15em] uppercase text-zinc-400 relative z-10 mb-4">
+            <BrainCircuit className="inline-block w-4 h-4 mr-2 -mt-0.5" /> PREDICCIÓN
           </span>
 
-          <div>
-            <p className="mb-1 font-mono text-label text-zinc-500">predicción</p>
-            <p className="font-mono text-caption text-zinc-300">{getPredictedResultLabel(prediction)}</p>
+          <div className="relative z-10 rounded-xl bg-zinc-800/40 p-4 border border-zinc-700/50">
+            <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500">Resultado probable</p>
+            <p className="text-sm font-semibold text-emerald-400">{getPredictedResultLabel(prediction)}</p>
           </div>
         </div>
       )}
 
       {isPost && prediction && (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900 border border-zinc-800 px-4 py-4 sm:px-5 sm:py-5">
-          <span className="mb-3 block font-mono text-label tracking-[.1em] uppercase text-zinc-500">
-            predicción vs resultado
+        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 shadow-lg relative overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-tr from-purple-500/5 to-transparent pointer-events-none" />
+          <span className="block font-display text-xs font-bold tracking-[0.15em] uppercase text-zinc-400 relative z-10 mb-4">
+            <BarChart3 className="inline-block w-4 h-4 mr-2 -mt-0.5" /> PREDICCIÓN VS RESULTADO
           </span>
 
-          <div className="flex items-center justify-between gap-3 flex-wrap">
+          <div className="relative z-10 flex items-center justify-between gap-4 flex-wrap rounded-xl bg-zinc-800/40 p-4 border border-zinc-700/50">   
             <div>
-              <p className="mb-1 font-mono text-label text-zinc-500">predicción</p>
-              <p className="font-mono text-caption text-zinc-300">{getPredictedResultLabel(prediction)}</p>
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500">MÁQUINA</p>
+              <p className="text-sm font-semibold text-emerald-400">{getPredictedResultLabel(prediction)}</p>
             </div>
 
             {prediction.wasCorrect !== null && (
               <span
                 className={cn(
-                  "font-mono text-label font-medium",
-                  "px-3 py-1 rounded-full shrink-0",
+                  "font-mono text-[11px] font-bold uppercase tracking-widest border",
+                  "px-4 py-1.5 rounded-full shrink-0 shadow-sm",
                   prediction.wasCorrect
-                    ? "bg-win/10 text-win"
-                    : "bg-loss/10 text-loss",
+                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/30"
+                    : "bg-red-500/10 text-red-500 border-red-500/30",
                 )}
               >
-                {prediction.wasCorrect ? "acertó" : "falló"}
+                {prediction.wasCorrect ? "ACERTÓ" : "FALLÓ"}
               </span>
             )}
 
             <div className="text-right">
-              <p className="mb-1 font-mono text-label text-zinc-500">resultado</p>
-              <p className="font-mono text-caption text-zinc-300">
-                {getActualResultLabel(prediction.actualResult)}
+              <p className="mb-1 text-[10px] font-bold uppercase tracking-widest text-zinc-500">REALIDAD</p>
+              <p className="text-sm font-semibold text-zinc-100">
               </p>
             </div>
           </div>
@@ -236,3 +249,4 @@ export default function MatchDetail({ match, prediction }: MatchDetailProps) {
     </section>
   );
 }
+

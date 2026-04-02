@@ -1,4 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import Image from "next/image";
+import { Flag, MapPin, Hash, Trophy } from "lucide-react";
 import type { TeamDetailResponse } from "@/server/services/football/types";
 
 interface TeamProfileProps {
@@ -7,34 +8,57 @@ interface TeamProfileProps {
 
 export default function TeamProfile({ team }: TeamProfileProps) {
   return (
-    <Card className="rounded-2xl border-[var(--b2)]/16 bg-[linear-gradient(128deg,rgba(58,168,255,.08),rgba(255,77,66,.06)_46%,rgba(8,16,31,.48))]">
-      <CardHeader className="p-6">
-        <CardTitle className="text-[28px] leading-none tracking-[.02em] text-[var(--text)]">{team.name}</CardTitle>
-      </CardHeader>
-      <CardContent className="p-6 pt-0">
-        <div className="grid gap-6 md:grid-cols-[104px_1fr] md:items-center">
-          <div className="flex h-24 w-24 items-center justify-center rounded-2xl border border-[var(--b2)]/16 bg-[var(--brand-navy)]/34">
-            {team.crest ? (
-              <img src={team.crest} alt={`Escudo de ${team.name}`} className="h-16 w-16 object-contain" />
-            ) : (
-              <span className="text-xs text-[var(--text3)]">Sin escudo</span>
-            )}
-          </div>
+    <div className="relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6 md:p-8 backdrop-blur-sm">
+      {/* Decorative Glow */}
+      <div className="absolute -left-24 -top-24 h-48 w-48 rounded-full bg-emerald-500/10 blur-[60px]" />
+      
+      <div className="relative flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8">
+        <div className="flex h-32 w-32 shrink-0 items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-950 p-4 shadow-xl">
+          {team.crest ? (
+            <div className="relative h-full w-full">
+              <Image 
+                src={team.crest} 
+                alt={`Escudo de ${team.name}`} 
+                fill 
+                className="object-contain drop-shadow-md"
+                sizes="128px"
+              />
+            </div>
+          ) : (
+            <Flag className="h-10 w-10 text-zinc-700" />
+          )}
+        </div>
 
-          <div className="space-y-1.5 text-sm text-[var(--text2)]">
-            <p>
-              <span className="font-semibold text-[var(--text)]">Nombre corto:</span>{" "}
-              {team.shortName ?? "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold text-[var(--text)]">Codigo:</span> {team.tla ?? "N/A"}
-            </p>
-            <p>
-              <span className="font-semibold text-[var(--text)]">Pais:</span> {team.area?.name ?? "N/A"}
-            </p>
+        <div className="flex-1 text-center md:text-left">
+          <h1 className="text-3xl md:text-4xl font-black tracking-tight text-zinc-100 mb-2 drop-shadow-sm">
+            {team.name}
+          </h1>
+          
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 mt-4">
+            <div className="flex items-center gap-1.5 rounded-full bg-zinc-950 border border-zinc-800 px-3 py-1.5">
+              <Hash className="h-3.5 w-3.5 text-zinc-500" />
+              <span className="font-mono text-xs font-bold text-zinc-300 uppercase">
+                {team.shortName ?? team.tla ?? "N/A"}
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-1.5 rounded-full bg-zinc-950 border border-zinc-800 px-3 py-1.5">
+              <MapPin className="h-3.5 w-3.5 text-zinc-500" />
+              <span className="font-mono text-xs font-bold text-zinc-300">
+                {team.area?.name ?? "Internacional"}
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1.5 rounded-full bg-emerald-950/30 border border-emerald-500/20 px-3 py-1.5">
+              <Trophy className="h-3.5 w-3.5 text-emerald-500" />
+              <span className="font-mono text-xs font-bold text-emerald-400">
+                Selección Nacional
+              </span>
+            </div>
           </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 }
+

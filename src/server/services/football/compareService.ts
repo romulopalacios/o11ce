@@ -11,6 +11,7 @@ interface TeamStats {
   goalsAgainst: number;
   goalDiff: number;
   points: number;
+  form: ("W" | "D" | "L")[];
 }
 
 interface TeamInfo {
@@ -67,8 +68,14 @@ export async function compareTeams(teamAId: number, teamBId: number): Promise<Co
     let losses = 0;
     let goalsFor = 0;
     let goalsAgainst = 0;
+    const form: ("W" | "D" | "L")[] = [];
 
-    for (const match of matches) {
+    // Sort matches by date to calculate form correctly
+    const sortedMatches = [...matches].sort(
+      (a, b) => new Date(b.utcDate).getTime() - new Date(a.utcDate).getTime()
+    );
+
+    for (const match of sortedMatches) {
       const goals = getMatchGoals(match, teamId);
 
       goalsFor += goals.goalsFor;
@@ -76,10 +83,13 @@ export async function compareTeams(teamAId: number, teamBId: number): Promise<Co
 
       if (goals.goalsFor > goals.goalsAgainst) {
         wins += 1;
+        if (form.length < 5) form.push("W");
       } else if (goals.goalsFor === goals.goalsAgainst) {
         draws += 1;
+        if (form.length < 5) form.push("D");
       } else {
         losses += 1;
+        if (form.length < 5) form.push("L");
       }
     }
 
@@ -92,6 +102,7 @@ export async function compareTeams(teamAId: number, teamBId: number): Promise<Co
       goalsAgainst,
       goalDiff: goalsFor - goalsAgainst,
       points: wins * 3 + draws,
+      form: form.reverse(), // chronologically ordered (oldest ... newest)
     };
   };
 

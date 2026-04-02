@@ -7,6 +7,8 @@ export interface TournamentAverages {
 export type RecentResult = "W" | "D" | "L";
 
 export interface TeamStatsInput {
+  eloRating: number;
+  matchesPlayed: number;
   goalsForPerMatch?: number | null;
   goalsAgainstPerMatch?: number | null;
   groupPoints?: number | null;
@@ -108,6 +110,29 @@ function toPercentagesWithExactHundred(home: number, draw: number, away: number)
   };
 }
 
+function calculateEloProbability(eloA: number, eloB: number): PredictionProbabilities {
+  // Fórmula estándar de ELO (Probabilidad esperada para A y B)
+  const expectedA = 1 / (1 + Math.pow(10, (eloB - eloA) / 400));
+  const expectedB = 1 / (1 + Math.pow(10, (eloA - eloB) / 400));
+  
+  // En ELO puro no existen los empates (es suma 1 entre Win y Lose).
+  // Para fútbol, deducimos un factor base de empate basado en la paridad.
+  // Equipos más igualados = más probabilidad de empate.
+  const eloDiff = Math.abs(eloA - eloB);
+  
+  // Probabilidad base de empate: entre 18% (desigual) y 28% (muy igualados)
+  const drawProbability = clamp(0.28 - (eloDiff / 1000), 0.18, 0.28);
+  
+  // Redistribuimos el porcentaje sobrante según las probabilidades originales
+  const nonDrawFactor = 1 - drawProbability;
+  
+  return {
+    homeWin: expectedA * nonDrawFactor,
+    draw: drawProbability,
+    awayWin: expectedB * nonDrawFactor
+  };
+}
+
 export function predictMatch(
   homeTeam: TeamStatsInput,
   awayTeam: TeamStatsInput,
@@ -160,9 +185,27 @@ export function predictMatch(
 
   const normalizedTotal = homeWinProbability + drawProbability + awayWinProbability;
 
-  const normalizedHome = homeWinProbability / normalizedTotal;
-  const normalizedDraw = drawProbability / normalizedTotal;
-  const normalizedAway = awayWinProbability / normalizedTotal;
+  const tournamentHome = homeWinProbability / normalizedTotal;
+  const tournamentDraw = drawProbability / normalizedTotal;
+  const tournamentAway = awayWinProbability / normalizedTotal;
 
-  return toPercentagesWithExactHundred(normalizedHome, normalizedDraw, normalizedAway);
+  // --------------------
+  // SISTEMA HÍBRIDO ELO
+  // --------------------
+  
+  // 1. Calculamos predicciones basadas puramente en ranking ELO histórico
+  const eloProbs = calculateEloProbability(homeTeam.eloRating, awayTeam.eloRating);
+
+  // 2. Determinamos cuántos partidos se han jugado para evaluar el peso:
+  // Si han jugado 0 partidos, ELO pesa 100%. Por cada partido, el torneo actual cobra 10% de importancia.
+  // Máximo peso del torneo: 80% (dejamos 20% histórico para finales para reflejar "peso de camiseta")
+  const averageMatchesPlayed = (homeTeam.matchesPlayed + awayTeam.matchesPlayed) / 2;
+  const tournamentWeight = clamp(averageMatchesPlayed * 0.12, 0, 0.8);
+  const eloWeight = 1 - tournamentWeight;
+
+  const finalHomeWin = (eloProbs.homeWin * eloWeight) + (tournamentHome * tournamentWeight);
+  const finalDraw = (eloProbs.draw * eloWeight) + (tournamentDraw * tournamentWeight);
+  const finalAwayWin = (eloProbs.awayWin * eloWeight) + (tournamentAway * tournamentWeight);
+
+  return toPercentagesWithExactHundred(finalHomeWin, finalDraw, finalAwayWin);
 }

@@ -20,6 +20,7 @@ export interface DashboardStandingRow {
   position: number
   teamId: number
   teamName: string
+  crestUrl?: string
   played: number
   won: number
   draw: number
@@ -171,3 +172,4 @@ export function subscribeToMockMatchUpdates(
     },
   }
 }
+
